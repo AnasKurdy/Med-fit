@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Med Fit">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#16291c">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-512.png">
+<link rel="manifest" href="manifest.json">
+<title>Med Fit — متابعة المرضى والعملاء</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4EFE7; --surface:#FFFFFF; --surface-2:#FBF7F0;
+  --ink:#172a25; --muted:#6c7d77; --faint:#9aa8a3;
+  --primary:#13564b; --primary-2:#1d7163; --primary-soft:#e4efeb;
+  --accent:#d98e48; --accent-soft:#f7ecdd;
+  --good:#2c8a6e; --good-soft:#e2f1ec;
+  --watch:#bf8420; --watch-soft:#f7eed8;
+  --alert:#c0442d; --alert-soft:#f8e4de;
+  --brand-dark:#16291c; --brand-dark2:#1e3626; --brand-green:#5aad30; --brand-green-d:#4a9127; --brand-cream:#ece7d3;
+  --fit:#4a9127; --fit-soft:#e7f2dd;
+  --border:rgba(19,86,75,.12); --border-2:rgba(19,86,75,.07);
+  --r-lg:22px; --r-md:16px; --r-sm:11px;
+  --sh:0 1px 2px rgba(19,86,75,.05),0 8px 24px rgba(19,86,75,.07);
+  --sh-sm:0 1px 2px rgba(19,86,75,.06);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Readex Pro',system-ui,sans-serif;
+  background:var(--bg); color:var(--ink);
+  font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+#app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;
+  box-shadow:0 0 80px rgba(19,86,75,.06)}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:15px;width:100%;color:var(--ink);
+  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);
+  padding:11px 13px;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--primary-2)}
+label{display:block;font-size:12.5px;color:var(--muted);margin:0 2px 6px;font-weight:500}
+.field{margin-bottom:13px}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.muted{color:var(--muted)}.faint{color:var(--faint)}
+.center{text-align:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--primary);color:#fff;font-weight:600;font-size:15px;
+  padding:13px 18px;border-radius:999px;width:100%;transition:transform .08s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:var(--primary-soft);color:var(--primary)}
+.btn.accent{background:var(--accent)}
+.btn.line{background:transparent;border:1.5px solid var(--border);color:var(--ink)}
+.btn.sm{padding:9px 14px;font-size:13.5px;width:auto}
+.btn.danger{background:var(--alert-soft);color:var(--alert)}
+.btn.wa{background:#25a35a;color:#fff}
+.btn.fit{background:var(--fit)}
+.wo-day{border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface);padding:14px;margin-bottom:12px}
+.wo-day-h{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.wo-day-h .ic{width:34px;height:34px;border-radius:10px;background:var(--fit-soft);color:var(--fit);display:grid;place-items:center;flex:none}
+.wo-ex{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-2);font-size:14px}
+.wo-ex:last-child{border:none}
+.wo-ex .en{flex:1}.wo-ex .em{font-size:11.5px;color:var(--muted)}
+.setgrid{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.setbox{background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:6px 8px;text-align:center;min-width:58px}
+.setbox .sl{font-size:10px;color:var(--faint)}
+.setbox input{padding:4px;text-align:center;border:none;background:transparent;font-weight:600;font-size:14px}
+.setbox .sw{font-size:9px;color:var(--faint)}
+.prev-hint{font-size:11px;color:var(--fit);margin-top:2px}
+
+/* header */
+.hdr{position:sticky;top:0;z-index:30;background:var(--brand-dark);color:var(--brand-cream);
+  padding:16px 18px 18px;overflow:hidden}
+.hdr::before{content:"";position:absolute;inset:-40% -10% auto auto;width:240px;height:240px;
+  background:radial-gradient(circle,rgba(90,173,48,.35),transparent 65%);pointer-events:none}
+.brand .logomark{width:36px;height:36px;flex:none}
+.wordmark{font-weight:600;letter-spacing:4px;font-size:19px;color:var(--brand-cream)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;position:relative}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .mark{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.16);
+  display:grid;place-items:center}
+.brand h1{font-size:19px;margin:0;font-weight:700;letter-spacing:-.3px}
+.brand .sub{font-size:11px;opacity:.75;margin-top:-2px}
+.chip-role{font-size:11.5px;background:rgba(255,255,255,.16);padding:5px 11px;border-radius:999px;
+  display:flex;align-items:center;gap:6px}
+.sync-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.14);
+  color:var(--brand-cream);display:grid;place-items:center;flex:none}
+.sync-btn svg{width:16px;height:16px}
+.sync-btn.spin svg{animation:spin .7s linear}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.hdr-ctx{position:relative;margin-top:14px}
+
+/* content */
+.wrap{padding:18px 16px 110px}
+.card{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--sh-sm);
+  border:1px solid var(--border-2);padding:16px;margin-bottom:14px}
+.card.flat{box-shadow:none}
+.sec-title{font-size:13px;font-weight:600;color:var(--muted);margin:22px 4px 11px;
+  display:flex;align-items:center;gap:7px}
+.sec-title:first-child{margin-top:4px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-size:11.5px;padding:4px 10px;border-radius:999px;background:var(--surface-2);
+  color:var(--muted);font-weight:500;border:1px solid var(--border-2)}
+.chip.good{background:var(--good-soft);color:var(--good);border-color:transparent}
+.chip.watch{background:var(--watch-soft);color:var(--watch);border-color:transparent}
+.chip.alert{background:var(--alert-soft);color:var(--alert);border-color:transparent}
+.chip.pri{background:var(--primary-soft);color:var(--primary);border-color:transparent}
+.chip.acc{background:var(--accent-soft);color:#b06a1f;border-color:transparent}
+
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.dot.good{background:var(--good)}.dot.watch{background:var(--watch)}.dot.alert{background:var(--alert)}
+
+/* patient list */
+.plist{display:flex;flex-direction:column;gap:12px}
+.pcard{background:var(--surface);border-radius:var(--r-md);box-shadow:var(--sh-sm);
+  border:1px solid var(--border-2);padding:15px;display:block;text-align:right;width:100%;
+  transition:transform .08s}
+.pcard:active{transform:scale(.99)}
+.pcard.flagged{border-color:var(--alert);box-shadow:0 0 0 1px var(--alert-soft)}
+.pcard-top{display:flex;align-items:center;gap:12px}
+.avatar{width:42px;height:42px;border-radius:13px;background:var(--primary-soft);color:var(--primary);
+  display:grid;place-items:center;font-weight:700;font-size:16px;flex:none}
+.pcard-name{font-weight:600;font-size:15.5px}
+.pcard-metrics{display:flex;gap:18px;margin-top:13px;padding-top:13px;border-top:1px solid var(--border-2)}
+.metric{flex:1}
+.metric .lbl{font-size:11px;color:var(--faint);margin-bottom:3px}
+.metric .val{font-size:17px;font-weight:700;display:flex;align-items:baseline;gap:4px}
+.metric .val small{font-size:11px;font-weight:500;color:var(--muted)}
+
+/* big stat */
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:var(--surface);border-radius:var(--r-md);padding:15px;box-shadow:var(--sh-sm);
+  border:1px solid var(--border-2)}
+.stat .lbl{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.stat .big{font-size:27px;font-weight:700;margin-top:6px;line-height:1.1}
+.stat .big small{font-size:13px;font-weight:500;color:var(--muted)}
+.stat .delta{font-size:12px;margin-top:5px;font-weight:500}
+.delta.up{color:var(--alert)}.delta.down{color:var(--good)}.delta.flat{color:var(--muted)}
+
+/* tabs */
+.tabs{display:flex;gap:4px;background:var(--surface-2);padding:4px;border-radius:13px;
+  overflow-x:auto;margin-bottom:16px;border:1px solid var(--border-2)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font-size:13px;padding:8px 13px;border-radius:9px;white-space:nowrap;color:var(--muted);font-weight:500}
+.tab.active{background:var(--surface);color:var(--primary);font-weight:600;box-shadow:var(--sh-sm)}
+
+/* bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);display:flex;padding:8px 6px 18px;z-index:40}
+.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--faint);font-size:10.5px;font-weight:500;padding:4px}
+.bnav button.active{color:var(--primary)}
+.bnav svg{width:22px;height:22px}
+
+/* list rows */
+.lrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-2)}
+.lrow:last-child{border-bottom:none}
+.lrow .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:none;
+  background:var(--surface-2)}
+.lrow .ic svg{width:18px;height:18px;color:var(--primary)}
+.lrow .main{flex:1;min-width:0}
+.lrow .t{font-weight:600;font-size:14px}
+.lrow .s{font-size:12px;color:var(--muted)}
+.lrow .end{text-align:left;font-weight:700;font-size:15px}
+
+/* med */
+.med{border:1px solid var(--border-2);border-radius:var(--r-sm);padding:12px;margin-bottom:9px;background:var(--surface)}
+.med-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.med .nm{font-weight:600}
+.med .ds{font-size:12.5px;color:var(--muted);margin-top:2px}
+.statusbar{display:flex;gap:6px;margin-top:11px}
+.sbtn{flex:1;font-size:11.5px;padding:7px;border-radius:8px;background:var(--surface-2);
+  color:var(--muted);font-weight:500;border:1px solid transparent}
+.sbtn.on-active{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+.sbtn.on-reduced{background:var(--accent-soft);color:#b06a1f;border-color:var(--accent)}
+.sbtn.on-stopped{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+
+/* quick log */
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.qcard{background:var(--surface);border-radius:var(--r-md);padding:15px 13px;box-shadow:var(--sh-sm);
+  border:1px solid var(--border-2);text-align:right;display:flex;flex-direction:column;gap:9px;
+  transition:transform .08s}
+.qcard:active{transform:scale(.98)}
+.qcard .qic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center}
+.qcard .qic svg{width:20px;height:20px}
+.qcard .qt{font-weight:600;font-size:14px}
+.qcard .qs{font-size:11.5px;color:var(--muted)}
+
+/* sheet / modal */
+.scrim{position:fixed;inset:0;background:rgba(23,42,37,.45);z-index:50;display:flex;
+  align-items:flex-end;justify-content:center;animation:fade .2s}
+.sheet{background:var(--bg);width:100%;max-width:480px;border-radius:24px 24px 0 0;
+  padding:8px 18px max(22px,env(safe-area-inset-bottom));max-height:92vh;overflow-y:auto;animation:up .25s}
+.sheet .grip{width:40px;height:4px;background:var(--border);border-radius:99px;margin:8px auto 16px}
+.sheet h3{margin:0 0 16px;font-size:18px}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+/* banner */
+.banner{border-radius:var(--r-md);padding:13px 15px;margin-bottom:14px;display:flex;gap:11px;align-items:flex-start;font-size:13px}
+.banner svg{width:20px;height:20px;flex:none;margin-top:1px}
+.banner.alert{background:var(--alert-soft);color:#8f2e1c}
+.banner.note{background:var(--primary-soft);color:var(--primary)}
+.banner.accent{background:var(--accent-soft);color:#9a5c1a}
+
+/* segmented for selecting log type */
+.seg{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:11px;margin-bottom:13px}
+.seg button{flex:1;padding:8px;font-size:12.5px;border-radius:8px;color:var(--muted);font-weight:500}
+.seg button.active{background:var(--surface);color:var(--primary);font-weight:600;box-shadow:var(--sh-sm)}
+
+.empty{text-align:center;color:var(--faint);padding:30px 10px;font-size:13.5px}
+.svgwrap{direction:ltr;width:100%}
+.toggle-cond{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.tcond{font-size:13px;padding:9px 14px;border-radius:999px;background:var(--surface-2);
+  color:var(--muted);font-weight:500;border:1.5px solid transparent}
+.tcond.on{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+.progress-track{height:9px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;border-radius:99px;background:var(--good);transition:width .4s}
+.fab{position:fixed;bottom:84px;left:50%;transform:translateX(calc(-50% + 200px));z-index:35;
+  width:54px;height:54px;border-radius:18px;background:var(--accent);color:#fff;
+  display:grid;place-items:center;box-shadow:0 8px 22px rgba(217,142,72,.4)}
+.fab svg{width:26px;height:26px}
+@media(max-width:520px){.fab{transform:none;left:auto;right:calc(50% - 240px + 18px)}}
+.hint{font-size:11.5px;color:var(--faint);margin-top:6px;line-height:1.5}
+.kvi{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border-2);font-size:14px}
+.kvi:last-child{border:none}.kvi .k{color:var(--muted)}
+.login-wrap{padding:60px 24px 40px;min-height:100vh;display:flex;flex-direction:column}
+.login-logo{width:64px;height:64px;border-radius:20px;background:var(--primary);display:grid;place-items:center;margin:0 auto 18px;box-shadow:var(--sh)}
+.roleopt{display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r-md);
+  border:1.5px solid var(--border);background:var(--surface);margin-bottom:12px;text-align:right;width:100%}
+.roleopt .ic{width:46px;height:46px;border-radius:14px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;flex:none}
+.roleopt .t{font-weight:600}.roleopt .s{font-size:12.5px;color:var(--muted)}
+.login-wrap.brand-bg{background:var(--brand-dark)}
+.login-wrap.brand-bg::before{content:"";position:fixed;top:-10%;right:-15%;width:320px;height:320px;
+  background:radial-gradient(circle,rgba(90,173,48,.22),transparent 65%);pointer-events:none}
+.roleopt.dk{background:var(--brand-dark2);border-color:rgba(236,231,211,.14);color:var(--brand-cream);position:relative}
+.roleopt.dk .ic{background:rgba(90,173,48,.16);color:var(--brand-green)}
+.roleopt.dk .s{color:rgba(236,231,211,.6)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============================================================
+   Med Fit — تطبيق متابعة المرضى الأيضيين (سكر/ضغط/دهون) + التمارين
+   ملف واحد · عربي RTL · تخزين دائم عبر Supabase (مستقل تمامًا عن Claude)
+   ============================================================ */
+
+const MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const STORE_KEY="medfit:data:v1";
+/* ---------- إعدادات Supabase (قاعدة بيانات مستقلة تمامًا عن Claude) ---------- */
+const SUPABASE_URL="https://nlfqnldlmoaakmrofqzn.supabase.co";
+const SUPABASE_KEY="sb_publishable_zveE7hpa73_BS8OnKaF2vw_KuO101lq";
+const SB_TABLE="medfit_kv";
+let DB=null;                 // كامل البيانات
+let SESSION={role:null,pid:null,view:null};
+let mem=null;                // احتياطي في الذاكرة لو فشل الاتصال
+let CURRENT_RENDER=null;     // آخر شاشة معروضة، لإعادة رسمها بعد المزامنة
+let SYNCING=false;
+let FREEZE_SYNC=false;       // نجمّد المزامنة أثناء إدخال نشط (مثل تسجيل جلسة تمرين)
+
+/* ---------- طبقة التخزين (Supabase) ---------- */
+async function loadDB(){
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE}?k=eq.${encodeURIComponent(STORE_KEY)}&select=v`,{
+      headers:{ "apikey":SUPABASE_KEY, "Accept":"application/json" }
+    });
+    if(!res.ok) throw new Error("http "+res.status);
+    const rows=await res.json();
+    if(rows&&rows.length&&rows[0].v) return rows[0].v;
+  }catch(e){ if(mem) return mem; }
+  return null;
+}
+async function saveDB(){
+  mem=DB;
+  try{
+    await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE}`,{
+      method:"POST",
+      headers:{
+        "apikey":SUPABASE_KEY,
+        "Content-Type":"application/json",
+        "Prefer":"resolution=merge-duplicates"
+      },
+      body:JSON.stringify([{k:STORE_KEY, v:DB, updated_at:new Date().toISOString()}])
+    });
+  }catch(e){}
+}
+/* سحب أحدث نسخة من البيانات (يُستخدم للمزامنة بين جهاز الطبيب وجهاز العميل) */
+async function pullLatest(){
+  try{
+    const fresh=await loadDB();
+    if(fresh) DB=fresh;
+    return true;
+  }catch(e){ return false; }
+}
+async function syncAndRedraw(manual){
+  if(document.querySelector("#scrim")) return; // لا نقاطع نموذج إدخال مفتوح
+  if(FREEZE_SYNC && !manual) return; // لا نقاطع تسجيل جلسة تمرين تلقائيًا
+  if(SYNCING) return; SYNCING=true;
+  const icon=$("#syncIcon"); if(icon&&manual) icon.classList.add("spin");
+  await pullLatest();
+  if(CURRENT_RENDER) CURRENT_RENDER();
+  if(icon) setTimeout(()=>icon.classList.remove("spin"),400);
+  SYNCING=false;
+}
+
+/* ---------- أدوات ---------- */
+const $=s=>document.querySelector(s);
+const app=()=>$("#app");
+const uid=()=>Math.random().toString(36).slice(2,9);
+const todayISO=()=>new Date().toISOString().slice(0,10);
+function fmtD(iso){ if(!iso)return"—"; const d=new Date(iso+"T00:00"); return d.getDate()+" "+MONTHS[d.getMonth()]; }
+function fmtDFull(iso){ if(!iso)return"—"; const d=new Date(iso+"T00:00"); return d.getDate()+" "+MONTHS[d.getMonth()]+" "+d.getFullYear(); }
+function daysAgo(iso){ if(!iso)return null; const d=Math.floor((Date.now()-new Date(iso+"T00:00"))/864e5);
+  if(d<=0)return"اليوم"; if(d===1)return"أمس"; if(d<7)return"قبل "+d+" أيام"; if(d<30)return"قبل "+Math.floor(d/7)+" أسابيع"; return"قبل "+Math.floor(d/30)+" شهر"; }
+const last=a=>(a&&a.length)?[...a].sort((x,y)=>x.date<y.date?-1:1).slice(-1)[0]:null;
+const sortByDate=a=>[...(a||[])].sort((x,y)=>x.date<y.date?-1:1);
+function esc(s){return(s==null?"":""+s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/* ---------- منطق طبي / أعلام الأمان ---------- */
+function glucoseStatus(v,type,t){ // mg/dL
+  v=+v;
+  if(type==="fasting"){
+    if(v<70) return["alert","هبوط سكر"];
+    if(v>250) return["alert","ارتفاع شديد"];
+    if(v>=(t.fbgMin||80)&&v<=(t.fbgMax||130)) return["good","ضمن الهدف"];
+    if(v>(t.fbgMax||130)) return["watch","مرتفع"];
+    return["watch","منخفض"];
+  }else{ // بعد الأكل / عشوائي
+    if(v<70) return["alert","هبوط سكر"];
+    if(v>300) return["alert","ارتفاع شديد"];
+    if(v<=180) return["good","جيد"];
+    if(v<=250) return["watch","مرتفع"];
+    return["alert","مرتفع جدًا"];
+  }
+}
+function bpStatus(s,d){
+  s=+s;d=+d;
+  if(s>=180||d>=120) return["alert","أزمة ضغط"];
+  if(s>=140||d>=90) return["watch","مرتفع"];
+  if(s>=130||d>=80) return["watch","مرتفع قليلًا"];
+  if(s<90||d<60) return["watch","منخفض"];
+  return["good","ضمن الهدف"];
+}
+function patientFlags(p){
+  const fl=[];
+  const g=last(p.logs.glucose);
+  if(g){const[st]=glucoseStatus(g.value,g.type,p.targets); if(st==="alert")fl.push("سكر");}
+  const b=last(p.logs.bp);
+  if(b){const[st]=bpStatus(b.sys,b.dia); if(st==="alert")fl.push("ضغط");}
+  const wl=last(p.workoutLogs);
+  if(wl&&wl.pain==='strong') fl.push("ألم تمرين");
+  return fl;
+}
+/* ---------- الستريك التحفيزي: عدد الأيام المتتالية بأي تسجيل ---------- */
+function allLogDates(p){
+  const s=new Set();
+  ["glucose","bp","weight","lifestyle","wellbeing"].forEach(k=>(p.logs[k]||[]).forEach(x=>s.add(x.date)));
+  (p.workoutLogs||[]).forEach(x=>s.add(x.date));
+  return s;
+}
+function computeStreak(p){
+  const dates=allLogDates(p);
+  let streak=0;
+  let d=new Date(todayISO()+"T00:00:00");
+  const iso=x=>x.toISOString().slice(0,10);
+  if(!dates.has(iso(d))) d.setDate(d.getDate()-1);
+  while(dates.has(iso(d))){ streak++; d.setDate(d.getDate()-1); }
+  return streak;
+}
+function medLoad(p){
+  const a=p.meds.filter(m=>m.status==="active").length;
+  const r=p.meds.filter(m=>m.status==="reduced").length;
+  const s=p.meds.filter(m=>m.status==="stopped").length;
+  return{active:a,reduced:r,stopped:s,total:p.meds.length};
+}
+
+/* ---------- رسم بياني SVG بسيط (خط + نطاق هدف) ---------- */
+function lineChart(opts){
+  const{values,bandMin,bandMax,color="#13564b",unit="",height=130}=opts;
+  if(!values||values.length===0) return '<div class="empty">لا توجد قراءات بعد</div>';
+  const W=320,H=height,pl=8,pr=8,pt=14,pb=22;
+  const ys=values.map(v=>v.y);
+  let mn=Math.min(...ys, bandMin!=null?bandMin:Infinity);
+  let mx=Math.max(...ys, bandMax!=null?bandMax:-Infinity);
+  if(mn===mx){mn-=5;mx+=5;}
+  const pad=(mx-mn)*0.15||5; mn-=pad; mx+=pad;
+  const n=values.length;
+  const X=i=> n===1? W/2 : pl+(i/(n-1))*(W-pl-pr);
+  const Y=v=> pt+(1-(v-mn)/(mx-mn))*(H-pt-pb);
+  let band="";
+  if(bandMin!=null&&bandMax!=null){
+    const y1=Y(bandMax),y2=Y(bandMin);
+    band=`<rect x="0" y="${y1.toFixed(1)}" width="${W}" height="${(y2-y1).toFixed(1)}" fill="${color}" opacity="0.08"/>
+      <line x1="0" y1="${y1.toFixed(1)}" x2="${W}" y2="${y1.toFixed(1)}" stroke="${color}" stroke-width="1" stroke-dasharray="3 4" opacity="0.35"/>
+      <line x1="0" y1="${y2.toFixed(1)}" x2="${W}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="1" stroke-dasharray="3 4" opacity="0.35"/>`;
+  }
+  const pts=values.map((v,i)=>`${X(i).toFixed(1)},${Y(v.y).toFixed(1)}`).join(" ");
+  const area=`${X(0).toFixed(1)},${(H-pb).toFixed(1)} `+pts+` ${X(n-1).toFixed(1)},${(H-pb).toFixed(1)}`;
+  const dots=values.map((v,i)=>{
+    const isLast=i===n-1;
+    return `<circle cx="${X(i).toFixed(1)}" cy="${Y(v.y).toFixed(1)}" r="${isLast?4.5:3}" fill="${isLast?color:'#fff'}" stroke="${color}" stroke-width="2"/>`;
+  }).join("");
+  const lastV=values[n-1];
+  const lbl=`<text x="${X(n-1).toFixed(1)}" y="${(Y(lastV.y)-9).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="700" fill="${color}" font-family="Readex Pro">${lastV.y}${unit?" "+unit:""}</text>`;
+  const xl=`<text x="${pl}" y="${H-6}" font-size="9.5" fill="#9aa8a3" font-family="Readex Pro">${values[0].x}</text>
+    <text x="${W-pr}" y="${H-6}" text-anchor="end" font-size="9.5" fill="#9aa8a3" font-family="Readex Pro">${lastV.x}</text>`;
+  return `<div class="svgwrap"><svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet">
+    ${band}
+    <polygon points="${area}" fill="${color}" opacity="0.06"/>
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}${lbl}${xl}
+  </svg></div>`;
+}
+
+/* ---------- أيقونات ---------- */
+const I={
+  leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  drop:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5S5 13 5 15a7 7 0 0 0 7 7z"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>',
+  scale:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M5 22h14M12 7v15M6 11l-3 6a4 4 0 0 0 6 0l-3-6Zm12 0-3 6a4 4 0 0 0 6 0l-3-6Z"/></svg>',
+  flask:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 9.5V3"/><path d="M7.5 14h9"/></svg>',
+  pill:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>',
+  spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+  bed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/></svg>',
+  battery:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/><path d="M6 11v2"/></svg>',
+  chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
+  note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
+  out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.7 18-9-15.5a1 1 0 0 0-1.7 0L2 18a1 1 0 0 0 .9 1.5h18.2A1 1 0 0 0 21.7 18Z"/><path d="M12 9v4M12 17h.01"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>',
+  target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+  wa:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.8c2.16 0 4.19.84 5.72 2.37a8.05 8.05 0 0 1 2.37 5.72c0 4.46-3.63 8.1-8.1 8.1a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.12.82.83-3.04-.2-.31a8.03 8.03 0 0 1-1.26-4.35c0-4.46 3.63-8.1 8.09-8.1Zm-2.44 4.35c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.12.16 1.7 2.6 4.12 3.64.58.25 1.02.4 1.37.51.58.18 1.1.16 1.52.1.46-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.93-1.19-.71-.64-1.19-1.42-1.33-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41h-.46Z"/></svg>',
+  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>',
+  dumbbell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 6.5 11 11M21 21l-1-1M3 3l1 1M18 22l4-4M2 6l4-4M17 6l-2 2M7 17l2-2"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  sync:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.3 6.4M3 12a9 9 0 0 1 15.3-6.4"/><path d="M21 4v5h-5M3 20v-5h5"/></svg>',
+  flame:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-3 5-3 9a3 3 0 0 0 6 0c0-1.5-1-2.2-1-3.8 2 1.3 4 4 4 7.3a6 6 0 0 1-12 0C6 9.5 9 6 12 2Z"/></svg>',
+};
+
+/* ---------- شعار MED FIT (ستيثوسكوب + دمبل) ---------- */
+function logoSVG(color,size){
+  color=color||"var(--brand-green)"; size=size||36;
+  return `<svg class="logomark" width="${size}" height="${size}" viewBox="0 0 96 116" fill="none"
+    stroke="${color}" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- dumbbell -->
+    <line x1="41" y1="17" x2="55" y2="17"/>
+    <line x1="37" y1="10" x2="37" y2="24"/><line x1="59" y1="10" x2="59" y2="24"/>
+    <line x1="32" y1="12" x2="32" y2="22"/><line x1="64" y1="12" x2="64" y2="22"/>
+    <line x1="41" y1="12" x2="41" y2="22"/><line x1="55" y1="12" x2="55" y2="22"/>
+    <!-- stethoscope U tubes -->
+    <path d="M37,25 C34,49 35,65 48,65 C61,65 62,49 59,25"/>
+    <!-- chestpiece stem -->
+    <path d="M43,65 L53,65 L51,74 L45,74 Z"/>
+    <!-- tube to eartip -->
+    <path d="M48,74 C48,93 64,99 74,90 C80,84 80,74 80,70"/>
+    <circle cx="80" cy="66" r="4"/>
+  </svg>`;
+}
+
+/* ============================================================
+   بيانات تجريبية أولية
+   ============================================================ */
+function seed(){
+  const t=new Date();
+  const iso=off=>{const d=new Date(t);d.setDate(d.getDate()-off);return d.toISOString().slice(0,10);};
+  const glucose=[],bp=[],weight=[],lifestyle=[],wellbeing=[];
+  for(let i=18;i>=0;i-=1){
+    if(i%1===0){
+      const fbg=Math.round(168-((18-i)*2.4)+(Math.random()*14-7));
+      glucose.push({date:iso(i),value:fbg,type:"fasting"});
+    }
+    if(i%2===0){
+      const sys=Math.round(152-((18-i)*0.9)+(Math.random()*8-4));
+      const dia=Math.round(96-((18-i)*0.45)+(Math.random()*5-2));
+      bp.push({date:iso(i),sys,dia,pulse:Math.round(74+Math.random()*8)});
+    }
+    if(i%3===0){
+      weight.push({date:iso(i),value:+(101.5-((18-i)*0.13)).toFixed(1),waist:Math.round(112-((18-i)*0.18))});
+      lifestyle.push({date:iso(i),steps:5000+Math.round(Math.random()*4000),activityMin:20+Math.round(Math.random()*30),sleepHrs:+(6+Math.random()*1.6).toFixed(1),heartRate:66+Math.round(Math.random()*10),mealNote:"",source:"manual"});
+      wellbeing.push({date:iso(i),energy:3+Math.round(Math.random()),fatigue:3-Math.round(Math.random()),mood:"مستقر",note:""});
+    }
+  }
+  const wl=[];
+  [2,5,9].forEach(off=>wl.push({date:iso(off),dayId:"D1",dayName:"صدر - ترايسبس",entries:[
+    {name:"بار صدر علوي",sets:[{w:135,r:11},{w:140,r:8},{w:140,r:7}]},
+    {name:"دمبل صدر مستوي",sets:[{w:60,r:10},{w:65,r:8}]},
+    {name:"ترايسبس كيبل",sets:[{w:65,r:12},{w:72,r:9}]}
+  ]}));
+  return{
+    clinic:{doctorName:"د. أنس كردي",pin:"0000",whatsapp:"",appUrl:""},
+    patients:[{
+      id:uid(),name:"محمد العتيبي",age:54,gender:"ذكر",phone:"",
+      conditions:{diabetes:true,hypertension:true,dyslipidemia:true,vitaminD:false,thyroid:false},
+      startDate:iso(90),accessCode:"1234",
+      workoutPlan:{split:"٤ أيام تمرين ويوم راحة",days:[
+        {id:"D1",name:"صدر - ترايسبس",exercises:[
+          {id:uid(),name:"بار صدر علوي (Incline)",sets:4,reps:"12-6",rest:"90-120"},
+          {id:uid(),name:"دمبل صدر مستوي",sets:4,reps:"12-6",rest:"90-120"},
+          {id:uid(),name:"دبس أسفل الصدر",sets:3,reps:"12-8",rest:"60-90"},
+          {id:uid(),name:"ترايسبس كيبل بوش داون",sets:3,reps:"12-8",rest:"45-60"}
+        ]},
+        {id:"D2",name:"ظهر - بايسبس",exercises:[
+          {id:uid(),name:"عقلة / سحب عمودي",sets:4,reps:"10-6",rest:"90-120"},
+          {id:uid(),name:"تي بار مسكة واسعة",sets:4,reps:"12-6",rest:"90-120"},
+          {id:uid(),name:"دمبل منشار",sets:3,reps:"12-8",rest:"60-90"},
+          {id:uid(),name:"بايسبس كيرل دمبل",sets:3,reps:"12-8",rest:"45-60"}
+        ]},
+        {id:"D3",name:"كتف - ترابيس",exercises:[
+          {id:uid(),name:"ملتري بريس بار",sets:4,reps:"12-6",rest:"90-120"},
+          {id:uid(),name:"رفرفة جانبي دمبل",sets:4,reps:"12-8",rest:"60"},
+          {id:uid(),name:"فيس بول",sets:3,reps:"12",rest:"45-60"},
+          {id:uid(),name:"شرقز بار (ترابيس)",sets:3,reps:"12",rest:"60-90"}
+        ]},
+        {id:"D4",name:"أرجل",exercises:[
+          {id:uid(),name:"سكوات",sets:4,reps:"12-6",rest:"120-180"},
+          {id:uid(),name:"ليق بريس",sets:3,reps:"12-8",rest:"90-120"},
+          {id:uid(),name:"هامسترينق",sets:3,reps:"12-8",rest:"60"},
+          {id:uid(),name:"بطات واقف",sets:3,reps:"15-12",rest:"45"}
+        ]},
+        {id:"D5",name:"بطن + كارديو",exercises:[
+          {id:uid(),name:"بطن سفلي رفرفة",sets:4,reps:"15-8",rest:"35-45"},
+          {id:uid(),name:"كرنشز على الكورة",sets:3,reps:"15-10",rest:"35-45"},
+          {id:uid(),name:"كارديو إليبتكال",sets:1,reps:"15 دقيقة",rest:"—"}
+        ]}
+      ]},
+      workoutLogs:wl,
+      targets:{fbgMin:80,fbgMax:130,hba1c:7,sbp:130,dbp:80,ldl:100,weight:88,waist:94,calTarget:2000,carbsTarget:190,proteinTarget:200,fatTarget:55},
+      meds:[
+        {id:uid(),name:"ميتفورمين",dose:"1000mg",freq:"مرتين يوميًا",cond:"سكر",status:"reduced",updatedAt:iso(12),note:"خُفّض من 2000 إلى 1000مج بعد تحسّن التراكمي",
+          history:[{date:iso(12),from:"active",to:"reduced",reason:"تحسّن HbA1c إلى 7.9% مع التزام جيد بالحمية والنشاط",snapshot:{glucose:118,bp:"132/84",hba1c:7.9}}]},
+        {id:uid(),name:"أملوديبين",dose:"5mg",freq:"مرة يوميًا",cond:"ضغط",status:"active",updatedAt:iso(90),note:"",history:[]},
+        {id:uid(),name:"أتورفاستاتين",dose:"20mg",freq:"مرة مساءً",cond:"دهون",status:"active",updatedAt:iso(90),note:"",history:[]},
+        {id:uid(),name:"جلِكلازيد",dose:"60mg",freq:"مرة يوميًا",cond:"سكر",status:"stopped",updatedAt:iso(20),note:"أُوقف بعد ضبط الحمية والنشاط",
+          history:[{date:iso(20),from:"active",to:"stopped",reason:"استقرار السكر الصائم دون هبوطات، مع نشاط بدني منتظم",snapshot:{glucose:104,bp:"128/82",hba1c:8.1}}]}
+      ],
+      logs:{
+        glucose,bp,weight,
+        labs:[
+          {date:iso(92),hba1c:8.9,ldl:148,hdl:38,tg:240,tc:215},
+          {date:iso(8),hba1c:7.2,ldl:108,hdl:44,tg:165,tc:178}
+        ],
+        lifestyle,wellbeing,adherence:[]
+      },
+      notes:[
+        {date:iso(8),text:"تحسّن ملحوظ في التراكمي والدهون. أوقفنا الجلكلازيد وخفّضنا الميتفورمين. نستمر على نفس النمط ونعيد التحاليل بعد 6 أسابيع."},
+        {date:iso(40),text:"بدأ المشي 30 دقيقة يوميًا وحمية منخفضة الكربوهيدرات."}
+      ]
+    }]
+  };
+}
+
+/* ============================================================
+   التهيئة
+   ============================================================ */
+async function init(){
+  DB=await loadDB();
+  if(!DB){ DB=seed(); await saveDB(); }
+  // تطبيع للبيانات القديمة
+  if(DB.clinic.whatsapp===undefined) DB.clinic.whatsapp="";
+  if(DB.clinic.appUrl===undefined) DB.clinic.appUrl="";
+  if(DB.clinic.autoLockMin===undefined) DB.clinic.autoLockMin=15;
+  (DB.patients||[]).forEach(p=>{
+    if(!p.workoutPlan) p.workoutPlan={split:"",days:[]};
+    if(!p.workoutLogs) p.workoutLogs=[];
+    if(!p.logs.adherence) p.logs.adherence=[];
+    if(!p.logs.cardio) p.logs.cardio=[];
+    if(!p.logs.nutrition) p.logs.nutrition=[];
+    if(p.consentAccepted===undefined) p.consentAccepted=false;
+    if(p.conditions&&p.conditions.vitaminD===undefined) p.conditions.vitaminD=false;
+    if(p.conditions&&p.conditions.thyroid===undefined) p.conditions.thyroid=false;
+    (p.meds||[]).forEach(m=>{ if(!m.history) m.history=[]; });
+  });
+  if(!handleAutoLog()) renderLogin();
+  // مزامنة دورية خفيفة + عند العودة للتطبيق، بدون مقاطعة نموذج مفتوح أو إدخال نشط
+  setInterval(()=>syncAndRedraw(false), 20000);
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) syncAndRedraw(false); });
+  window.addEventListener("focus",()=>syncAndRedraw(false));
+  // قفل تلقائي بعد عدم نشاط (لحماية بيانات المرضى إذا نُسي الجوال مفتوحًا) — يخص حساب الطبيب فقط
+  ["click","touchstart","keydown","scroll"].forEach(ev=>document.addEventListener(ev,()=>{LAST_ACTIVITY=Date.now();},{passive:true}));
+  setInterval(()=>{
+    if(SESSION.role!=="doctor") return;
+    const mins=DB.clinic.autoLockMin;
+    if(!mins || mins<=0) return;
+    if(Date.now()-LAST_ACTIVITY > mins*60000){ renderLogin(); }
+  },30000);
+}
+let LAST_ACTIVITY=Date.now();
+function getPatient(id){return DB.patients.find(p=>p.id===id);}
+
+/* ---------- استقبال تسجيل تلقائي قادم من أتمتة Shortcuts (خطوات/نبض) ---------- */
+function handleAutoLog(){
+  const q=new URLSearchParams(window.location.search);
+  if(q.get("autolog")!=="1") return false;
+  const code=(q.get("code")||"").trim();
+  const p=DB.patients.find(x=>x.accessCode===code);
+  if(!p){ renderLogin(); return true; }
+  const steps=q.get("steps"), hr=q.get("hr"), sleep=q.get("sleep"), activity=q.get("activity"), cal=q.get("cal");
+  const date=todayISO();
+  let entry=p.logs.lifestyle.find(x=>x.date===date);
+  if(!entry){ entry={date,steps:0,activityMin:0,sleepHrs:0,heartRate:null,calBurned:null,mealNote:"",source:"auto"}; p.logs.lifestyle.push(entry); }
+  if(steps!=null && steps!=="") entry.steps=+steps||entry.steps;
+  if(hr!=null && hr!=="") entry.heartRate=+hr||entry.heartRate;
+  if(sleep!=null && sleep!=="") entry.sleepHrs=+sleep||entry.sleepHrs;
+  if(activity!=null && activity!=="") entry.activityMin=+activity||entry.activityMin;
+  if(cal!=null && cal!=="") entry.calBurned=+cal||entry.calBurned;
+  entry.source="auto";
+  saveDB();
+  const parts=[steps?`الخطوات: ${steps}`:'',activity?`النشاط: ${activity}د`:'',sleep?`النوم: ${sleep}س`:'',hr?`النبض: ${hr}`:'',cal?`السعرات: ${cal}`:''].filter(Boolean).join(' · ');
+  app().innerHTML=`<div class="login-wrap brand-bg center">
+    <div style="text-align:center;margin-bottom:10px">${logoSVG('var(--brand-green)',60)}</div>
+    <h2 style="color:var(--brand-cream);margin:10px 0 6px">تم الحفظ تلقائيًا ✅</h2>
+    <p style="color:rgba(236,231,211,.75);font-size:14px">${esc(p.name)} — ${parts}</p>
+    <div style="flex:1"></div>
+    <button class="btn fit" onclick="SESSION.role='client';SESSION.pid='${p.id}';SESSION.view='today';${p.consentAccepted?'renderClient()':`renderConsent('${p.id}')`}">فتح التطبيق</button>
+  </div>`;
+  return true;
+}
+
+/* ============================================================
+   شاشة الدخول
+   ============================================================ */
+function renderLogin(){
+  SESSION={role:null,pid:null,view:null};
+  FREEZE_SYNC=false; CURRENT_RENDER=null;
+  app().innerHTML=`
+  <div class="login-wrap brand-bg">
+    <div style="text-align:center;margin-bottom:6px">${logoSVG('var(--brand-green)',86)}</div>
+    <h1 class="center wordmark" style="margin:6px 0 2px;font-size:30px;letter-spacing:8px;">MED FIT</h1>
+    <p class="center" style="margin:8px 0 40px;color:rgba(236,231,211,.7);font-size:13.5px;">متابعة طبّية ولياقة — نحو نمط أصحّ وتقليل الأدوية</p>
+    <button class="roleopt dk" onclick="askDoctorPin()">
+      <span class="ic">${I.users}</span>
+      <span><span class="t">دخول الطبيب / المدرب</span><br><span class="s">متابعة كل العملاء وإدارة الخطة والتمارين</span></span>
+    </button>
+    <button class="roleopt dk" onclick="renderClientLogin()">
+      <span class="ic">${I.user}</span>
+      <span><span class="t">دخول العميل</span><br><span class="s">تسجيل قياساتك وتمارينك ومتابعة تقدّمك</span></span>
+    </button>
+    <div style="flex:1"></div>
+    <p class="center" style="color:rgba(236,231,211,.45);font-size:11.5px;line-height:1.6">البيانات محفوظة بشكل مشترك بين الطبيب وعملائه وتتزامن تلقائيًا بين الأجهزة.</p>
+  </div>`;
+}
+function askDoctorPin(){
+  openSheet(`<h3>دخول الطبيب</h3>
+    <div class="field"><label>رمز الدخول (PIN)</label>
+      <input id="pin" type="tel" inputmode="numeric" placeholder="••••" maxlength="6"></div>
+    <p class="hint">الرمز الافتراضي: 0000 — تقدر تغيّره من الإعدادات.</p>
+    <button class="btn" onclick="doDoctorLogin()">دخول</button>`);
+  setTimeout(()=>$("#pin")&&$("#pin").focus(),250);
+}
+function doDoctorLogin(){
+  const v=$("#pin").value.trim();
+  if(v!==(DB.clinic.pin||"0000")){alert("رمز غير صحيح");return;}
+  closeSheet(); SESSION.role="doctor"; SESSION.view="patients"; renderDoctor();
+}
+function renderClientLogin(){
+  openSheet(`<h3>دخول العميل</h3>
+    <div class="field"><label>الاسم</label><input id="cname" placeholder="اسمك كما هو مسجّل"></div>
+    <div class="field"><label>رمز الدخول</label><input id="ccode" type="tel" inputmode="numeric" placeholder="الرمز من طبيبك"></div>
+    <p class="hint">جرّب المريض التجريبي: محمد العتيبي — الرمز 1234</p>
+    <button class="btn" onclick="doClientLogin()">دخول</button>`);
+}
+function doClientLogin(){
+  const nm=$("#cname").value.trim(), cd=$("#ccode").value.trim();
+  const p=DB.patients.find(x=>x.name===nm&&x.accessCode===cd);
+  if(!p){alert("الاسم أو الرمز غير صحيح");return;}
+  closeSheet();
+  SESSION.role="client"; SESSION.pid=p.id; SESSION.view="today";
+  if(!p.consentAccepted){ renderConsent(p.id); return; }
+  renderClient();
+}
+/* ---------- شاشة الموافقة (تظهر مرة واحدة لكل عميل قبل أول استخدام) ---------- */
+function renderConsent(pid){
+  FREEZE_SYNC=false; CURRENT_RENDER=null;
+  const p=getPatient(pid);
+  app().innerHTML=`<div class="login-wrap brand-bg">
+    <div style="text-align:center;margin-bottom:14px">${logoSVG('var(--brand-green)',54)}</div>
+    <h2 style="color:var(--brand-cream);text-align:center;margin:0 0 4px">مرحبًا ${esc(p.name.split(" ")[0])} 👋</h2>
+    <p style="color:rgba(236,231,211,.7);text-align:center;font-size:13px;margin-bottom:20px">قبل ما نبدأ، اقرأ هذي النقاط المهمة</p>
+    <div class="card" style="background:var(--brand-dark2);border-color:rgba(236,231,211,.14)">
+      <div class="kvi" style="border-color:rgba(236,231,211,.1)"><span style="color:var(--brand-cream)">📋 هذا التطبيق أداة <b>متابعة ومساعدة</b> بين طبيبك وأنت، وليس بديلًا عن الفحص الحضوري أو التشخيص الطبي.</span></div>
+      <div class="kvi" style="border-color:rgba(236,231,211,.1)"><span style="color:var(--brand-cream)">💊 أي تغيير في دوائك (جرعة، إيقاف، إضافة) يصدر <b>فقط</b> من طبيبك المعالج بناءً على قراراته السريرية.</span></div>
+      <div class="kvi" style="border-color:rgba(236,231,211,.1)"><span style="color:var(--brand-cream)">🚨 في حالات الطوارئ (هبوط سكر شديد، ألم صدر، ضيق تنفس) <b>لا تعتمد على التطبيق</b> — اتصل بالإسعاف فورًا (997/911).</span></div>
+      <div class="kvi" style="border:none"><span style="color:var(--brand-cream)">🔒 بياناتك الصحية تُستخدم فقط لمتابعتك مع طبيبك، ولن تُشارك مع أي جهة أخرى.</span></div>
+    </div>
+    <label style="display:flex;align-items:flex-start;gap:10px;margin:18px 4px;color:rgba(236,231,211,.85);font-size:13.5px">
+      <input type="checkbox" id="consentBox" style="width:20px;height:20px;margin-top:2px;accent-color:var(--brand-green)">
+      <span>أوافق وأتفهّم النقاط أعلاه، وأرغب بالمتابعة عبر Med Fit.</span>
+    </label>
+    <button class="btn fit" onclick="acceptConsent('${pid}')">متابعة</button>
+  </div>`;
+}
+function acceptConsent(pid){
+  if(!$("#consentBox").checked){alert("يرجى الموافقة على الشروط أولًا للمتابعة");return;}
+  const p=getPatient(pid);
+  p.consentAccepted=true; p.consentDate=todayISO();
+  saveDB();
+  renderClient();
+}
+
+/* ============================================================
+   واجهة الطبيب
+   ============================================================ */
+function header(title,sub,opts={}){
+  return `<div class="hdr">
+    <div class="hdr-top">
+      <div class="brand">
+        ${opts.back?`<button onclick="${opts.back}" style="color:var(--brand-cream);display:grid;place-items:center;width:32px;height:32px;margin-inline-start:-6px">${I.back}</button>`:`<span class="mark" style="background:transparent">${logoSVG('var(--brand-green)',30)}</span>`}
+        <div><h1>${esc(title)}</h1>${sub?`<div class="sub">${esc(sub)}</div>`:""}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button id="syncIcon" class="sync-btn" onclick="syncAndRedraw(true)" title="تحديث البيانات">${I.sync}</button>
+        <button class="chip-role" onclick="renderLogin()">${SESSION.role==="doctor"?"الطبيب":"العميل"} ${I.out}</button>
+      </div>
+    </div>
+    ${opts.ctx||""}
+  </div>`;
+}
+function bnav(items){
+  return `<div class="bnav">${items.map(it=>`<button class="${SESSION.view===it.v?'active':''}" onclick="${it.fn}">${it.icon}<span>${it.label}</span></button>`).join("")}</div>`;
+}
+
+function renderDoctor(){
+  if(SESSION.view==="settings") return renderSettings();
+  return renderPatients();
+}
+function docNav(){
+  return bnav([
+    {v:"patients",icon:I.users,label:"المرضى",fn:"SESSION.view='patients';renderDoctor()"},
+    {v:"settings",icon:I.gear,label:"الإعدادات",fn:"SESSION.view='settings';renderDoctor()"}
+  ]);
+}
+function renderSettings(){
+  FREEZE_SYNC=false;
+  CURRENT_RENDER=renderSettings;
+  const c=DB.clinic;
+  app().innerHTML=header("الإعدادات",c.doctorName)
+  +`<div class="wrap">
+    <div class="card">
+      <div class="sec-title" style="margin-top:0">${I.user} بيانات الطبيب</div>
+      <div class="field"><label>الاسم</label><input id="s_name" value="${esc(c.doctorName)}"></div>
+      <div class="field"><label>رمز الدخول (PIN)</label><input id="s_pin" value="${esc(c.pin)}" inputmode="numeric"></div>
+    </div>
+    <div class="card">
+      <div class="sec-title" style="margin-top:0">${I.wa} واتساب والرابط</div>
+      <div class="field"><label>رقم واتساب الطبيب (بصيغة دولية بدون +)</label>
+        <input id="s_wa" value="${esc(c.whatsapp)}" inputmode="numeric" placeholder="9665xxxxxxxx"></div>
+      <div class="field"><label>رابط التطبيق (بعد رفعه على GitHub Pages)</label>
+        <input id="s_url" value="${esc(c.appUrl)}" placeholder="https://username.github.io/..."></div>
+      <p class="hint">الصق هنا رابط GitHub Pages الخاص بتطبيقك. هذا الرابط هو ما يُرسَل تلقائيًا للعميل عبر واتساب مع اسمه ورمز دخوله.</p>
+    </div>
+    <div class="card">
+      <div class="sec-title" style="margin-top:0">${I.shield} القفل التلقائي</div>
+      <div class="field"><label>تسجيل خروج تلقائي بعد عدم نشاط (دقائق، 0 = تعطيل)</label>
+        <input id="s_lock" type="number" value="${c.autoLockMin!=null?c.autoLockMin:15}"></div>
+      <p class="hint">حماية إضافية إذا نسيت الجوال مفتوحًا على لوحة المرضى.</p>
+    </div>
+    <div class="banner accent">${I.warn}<div><b>تنبيه تنظيمي:</b> هذا التطبيق أداة متابعة داخلية بين طبيبك ومرضاه. عند التوسّع لعموم الجمهور، راجع متطلبات هيئة الغذاء والدواء (SFDA) لتصنيف البرمجيات الطبية، ونظام حماية البيانات الشخصية (PDPL) لتخزين البيانات الصحية. هذا ليس استشارة قانونية.</div></div>
+    <div class="banner note">${I.sync}<div>البيانات محفوظة في قاعدة بياناتك الخاصة، وتصل التحديثات تلقائيًا كل ٢٠ ثانية تقريبًا، أو فورًا بالضغط على أيقونة التحديث ⟳ أعلى الصفحة.</div></div>
+    <button class="btn" onclick="saveSettings()">${I.check} حفظ</button>
+  </div>`
+  +docNav();
+}
+function saveSettings(){
+  DB.clinic.doctorName=$("#s_name").value.trim()||DB.clinic.doctorName;
+  DB.clinic.pin=$("#s_pin").value.trim()||"0000";
+  DB.clinic.whatsapp=$("#s_wa").value.trim();
+  DB.clinic.appUrl=$("#s_url").value.trim();
+  DB.clinic.autoLockMin=+$("#s_lock").value;
+  DB.clinic.autoLockMin=isNaN(DB.clinic.autoLockMin)?15:DB.clinic.autoLockMin;
+  saveDB(); alert("تم الحفظ");
+}
+/* ---------- واتساب ---------- */
+/* يحوّل رقم الجوال السعودي (بأي صيغة شائعة) إلى الصيغة الدولية اللي يقبلها واتساب */
+function normalizePhone(raw){
+  let d=(raw||"").replace(/[^\d]/g,"");
+  if(!d) return "";
+  if(d.startsWith("00")) d=d.slice(2);         // 00966...
+  if(d.startsWith("966")) return d;            // صيغة دولية جاهزة
+  if(d.startsWith("0")) return "966"+d.slice(1); // 05xxxxxxxx -> 9665xxxxxxxx
+  if(d.length===9 && d.startsWith("5")) return "966"+d; // 5xxxxxxxx بدون صفر
+  return d;
+}
+function waShare(pid){
+  const p=getPatient(pid); const url=DB.clinic.appUrl||"";
+  const msg=`مرحبًا ${p.name} 👋\nأهلاً بك في متابعة MED FIT.\n\nللدخول:\n• افتح الرابط ثم اختر «دخول العميل»\n• الاسم: ${p.name}\n• رمز الدخول: ${p.accessCode}\n${url?"\nالرابط: "+url:"\n(احفظ رابط التطبيق من الإعدادات أولًا)"}\n\nنتابع تقدّمك معًا 🌿`;
+  const phone=normalizePhone(p.phone);
+  const link=phone
+    ? "https://wa.me/"+phone+"?text="+encodeURIComponent(msg)
+    : "https://api.whatsapp.com/send?text="+encodeURIComponent(msg); // بدون رقم: يفتح واتساب ويخليك تختار جهة الاتصال بنفسك
+  window.open(link,"_blank");
+}
+function waDoctor(){
+  const ph=normalizePhone(DB.clinic.whatsapp);
+  if(!ph){alert("لم يُدخل طبيبك رقم واتساب بعد");return;}
+  const p=getPatient(SESSION.pid);
+  window.open("https://wa.me/"+ph+"?text="+encodeURIComponent(`مرحبًا دكتور، أنا ${p.name}. عندي استفسار بخصوص متابعتي.`),"_blank");
+}
+
+/* ============================================================
+   وحدة التمارين
+   ============================================================ */
+function ptWorkouts(p){
+  const plan=p.workoutPlan||{days:[]};
+  const logs=sortByDate(p.workoutLogs||[]);
+  const painLogs=logs.filter(l=>l.pain&&l.pain!=='none');
+  const volPoints=logs.map(l=>({x:fmtD(l.date),y:sessionVolume(l)}));
+  const days=plan.days.map(d=>`
+    <div class="wo-day">
+      <div class="wo-day-h"><span class="ic">${I.dumbbell}</span>
+        <div style="flex:1"><div style="font-weight:600">${esc(d.name)}</div><div class="em">${d.exercises.length} تمارين</div></div>
+        <button class="btn ghost sm" onclick="dayForm('${p.id}','${d.id}')">تعديل</button>
+      </div>
+      ${d.exercises.map(e=>`<div class="wo-ex"><span class="en">${esc(e.name)}</span><span class="em">${e.sets}×${esc(e.reps)} · ${esc(e.rest)}ث</span>
+        <button class="btn ghost sm" onclick="exForm('${p.id}','${d.id}','${e.id}')">✎</button></div>`).join("")||'<div class="hint">لا تمارين بعد</div>'}
+      <button class="btn ghost sm" style="width:100%;margin-top:10px" onclick="exForm('${p.id}','${d.id}')">${I.plus} إضافة تمرين</button>
+    </div>`).join("");
+  return `<div class="banner accent">${I.dumbbell}<div>ابنِ خطة تمارين مناسبة للنادي؛ العميل يسجّل أوزانه وتكراراته كل جلسة ويتابع تطوّره.</div></div>
+    ${painLogs.length?`<div class="banner alert">${I.warn}<div><b>تنبيه:</b> العميل سجّل ألمًا في ${painLogs.length} جلسة${painLogs.length>1?'ات':''} — آخرها ${fmtDFull(painLogs[painLogs.length-1].date)}: «${esc(painLogs[painLogs.length-1].painNote||'بدون تفاصيل')}»</div></div>`:''}
+    ${logs.length?`<div class="card"><div class="sec-title" style="margin-top:0">${I.dumbbell} اتجاه حجم التدريب (وزن×عدّات)</div>
+      ${lineChart({values:volPoints,color:"#4a9127"})}
+      <div class="hint">مؤشر التقدّم التدريجي (Progressive Overload) — يفترض يرتفع تدريجيًا مع الوقت.</div></div>`:''}
+    ${plan.days.length?'':`<button class="btn fit" style="margin-bottom:12px" onclick="loadTemplate('${p.id}')">${I.plus} تحميل قالب جاهز (تقسيمة ٥ أيام)</button>`}
+    ${planSplitLabel(plan)?`<div class="chip pri" style="margin-bottom:12px;display:inline-block">${esc(planSplitLabel(plan))}</div>`:''}
+    ${days||'<div class="empty">لا توجد خطة بعد</div>'}
+    <button class="btn line" style="margin-top:6px" onclick="dayForm('${p.id}')">${I.plus} إضافة يوم تمرين</button>
+    ${nutritionCardioCard(p)}`;
+}
+/* ملخص أسبوعي للكارديو والتغذية (مستوحى من ملف المتابعة الأصلي) */
+function nutritionCardioCard(p){
+  const since=new Date(); since.setDate(since.getDate()-6);
+  const sinceISO=since.toISOString().slice(0,10);
+  const cardioWk=(p.logs.cardio||[]).filter(x=>x.date>=sinceISO);
+  const nutriWk=(p.logs.nutrition||[]).filter(x=>x.date>=sinceISO);
+  const cardioMin=cardioWk.reduce((s,x)=>s+x.duration,0), cardioCal=cardioWk.reduce((s,x)=>s+x.calories,0);
+  const avgCal=nutriWk.length?Math.round(nutriWk.reduce((s,x)=>s+x.calories,0)/nutriWk.length):null;
+  const lastCardio=last(p.logs.cardio), lastNutri=last(p.logs.nutrition);
+  const t=p.targets||{};
+  const hasTargets=t.calTarget||t.carbsTarget||t.proteinTarget||t.fatTarget;
+  return `<div class="card" style="margin-top:14px">
+    <div class="sec-title" style="margin-top:0">${I.flask} التغذية والكارديو (آخر ٧ أيام)</div>
+    <div class="statgrid" style="margin-bottom:12px">
+      <div class="stat"><div class="lbl">كارديو</div><div class="big">${cardioMin}<small> د</small></div><div class="hint">${cardioCal} سعرة محروقة</div></div>
+      <div class="stat"><div class="lbl">متوسط السعرات</div><div class="big">${avgCal||'—'}${avgCal?'<small> Cal</small>':''}</div></div>
+    </div>
+    ${hasTargets?`<div class="card flat" style="background:var(--surface-2);margin-bottom:12px">
+      <div class="hint" style="margin-bottom:7px;font-weight:600;color:var(--ink)">${I.target} أهداف الطبيب الغذائية</div>
+      ${t.calTarget?`<div class="kvi"><span class="k">السعرات المستهدفة</span><span>${t.calTarget} Cal${avgCal?` <span class="dot ${Math.abs(avgCal-t.calTarget)<=t.calTarget*0.1?'good':'watch'}"></span>`:''}</span></div>`:''}
+      ${t.carbsTarget?`<div class="kvi"><span class="k">كاربوهيدرات</span><span>${t.carbsTarget} g</span></div>`:''}
+      ${t.proteinTarget?`<div class="kvi"><span class="k">بروتين</span><span>${t.proteinTarget} g</span></div>`:''}
+      ${t.fatTarget?`<div class="kvi"><span class="k">دهون</span><span>${t.fatTarget} g</span></div>`:''}
+    </div>`:''}
+    ${lastCardio?`<div class="kvi"><span class="k">آخر كارديو</span><span>${esc(lastCardio.type)} · ${lastCardio.duration} د · ${fmtD(lastCardio.date)}</span></div>`:''}
+    ${lastNutri?`<div class="kvi"><span class="k">آخر تغذية</span><span>${lastNutri.calories} Cal · ك${lastNutri.carbs} ب${lastNutri.protein} د${lastNutri.fat} · ${fmtD(lastNutri.date)}</span></div>`:''}
+    <div class="row" style="margin-top:10px">
+      <button class="btn ghost sm" style="flex:1" onclick="logSheet('${p.id}','cardio')">${I.plus} كارديو</button>
+      <button class="btn ghost sm" style="flex:1" onclick="logSheet('${p.id}','nutrition')">${I.plus} تغذية</button>
+    </div>
+  </div>`;
+}
+function dayForm(pid,did){
+  const p=getPatient(pid); const d=did?p.workoutPlan.days.find(x=>x.id===did):null;
+  openSheet(`<h3>${d?'تعديل اليوم':'يوم تمرين جديد'}</h3>
+    <div class="field"><label>اسم اليوم</label><input id="d_name" value="${d?esc(d.name):''}" placeholder="مثال: صدر - ترايسبس"></div>
+    <button class="btn" onclick="saveDay('${pid}','${did||''}')">حفظ</button>
+    ${d?`<button class="btn danger" style="margin-top:9px" onclick="delDay('${pid}','${did}')">حذف اليوم</button>`:''}`);
+}
+function saveDay(pid,did){const p=getPatient(pid);const nm=$("#d_name").value.trim();if(!nm){alert("أدخل الاسم");return;}
+  if(did){p.workoutPlan.days.find(x=>x.id===did).name=nm;}else{p.workoutPlan.days.push({id:uid(),name:nm,exercises:[]});}
+  saveDB();closeSheet();renderPatient();}
+function delDay(pid,did){const p=getPatient(pid);p.workoutPlan.days=p.workoutPlan.days.filter(x=>x.id!==did);saveDB();closeSheet();renderPatient();}
+function exForm(pid,did,eid){
+  const p=getPatient(pid);const d=p.workoutPlan.days.find(x=>x.id===did);const e=eid?d.exercises.find(x=>x.id===eid):null;
+  openSheet(`<h3>${e?'تعديل تمرين':'تمرين جديد'}</h3>
+    <div class="field"><label>اسم التمرين</label><input id="e_name" value="${e?esc(e.name):''}"></div>
+    <div class="row"><div class="field"><label>الجلسات</label><input id="e_sets" type="number" value="${e?e.sets:3}"></div>
+      <div class="field"><label>التكرار</label><input id="e_reps" value="${e?esc(e.reps):'12-8'}"></div>
+      <div class="field"><label>راحة (ث)</label><input id="e_rest" value="${e?esc(e.rest):'60'}"></div></div>
+    <button class="btn" onclick="saveEx('${pid}','${did}','${eid||''}')">حفظ</button>
+    ${e?`<button class="btn danger" style="margin-top:9px" onclick="delEx('${pid}','${did}','${eid}')">حذف التمرين</button>`:''}`);
+}
+function saveEx(pid,did,eid){const p=getPatient(pid);const d=p.workoutPlan.days.find(x=>x.id===did);
+  const nm=$("#e_name").value.trim();if(!nm){alert("أدخل الاسم");return;}
+  const data={name:nm,sets:+$("#e_sets").value||3,reps:$("#e_reps").value.trim(),rest:$("#e_rest").value.trim()};
+  if(eid){Object.assign(d.exercises.find(x=>x.id===eid),data);}else{d.exercises.push({id:uid(),...data});}
+  saveDB();closeSheet();renderPatient();}
+function delEx(pid,did,eid){const p=getPatient(pid);const d=p.workoutPlan.days.find(x=>x.id===did);
+  d.exercises=d.exercises.filter(x=>x.id!==eid);saveDB();closeSheet();renderPatient();}
+function loadTemplate(pid){
+  const p=getPatient(pid);
+  const mk=(n,ex)=>({id:uid(),name:n,exercises:ex.map(a=>({id:uid(),name:a[0],sets:a[1],reps:a[2],rest:a[3]}))});
+  p.workoutPlan={split:"",days:[
+    mk("صدر - ترايسبس",[["بار صدر علوي (Incline)",4,"12-6","90-120"],["دمبل صدر مستوي",4,"12-6","90-120"],["دبس أسفل الصدر",3,"12-8","60-90"],["ترايسبس كيبل بوش داون",3,"12-8","45-60"]]),
+    mk("ظهر - بايسبس",[["عقلة / سحب عمودي",4,"10-6","90-120"],["تي بار مسكة واسعة",4,"12-6","90-120"],["دمبل منشار",3,"12-8","60-90"],["بايسبس كيرل دمبل",3,"12-8","45-60"]]),
+    mk("كتف - ترابيس",[["ملتري بريس بار",4,"12-6","90-120"],["رفرفة جانبي دمبل",4,"12-8","60"],["فيس بول",3,"12","45-60"],["شرقز بار",3,"12","60-90"]]),
+    mk("أرجل",[["سكوات",4,"12-6","120-180"],["ليق بريس",3,"12-8","90-120"],["هامسترينق",3,"12-8","60"],["بطات واقف",3,"15-12","45"]]),
+    mk("بطن + كارديو",[["بطن سفلي رفرفة",4,"15-8","35-45"],["كرنشز على الكورة",3,"15-10","35-45"],["كارديو إليبتكال",1,"15 دقيقة","—"]])
+  ]};
+  saveDB();renderPatient();
+}
+/* --- عرض التمارين للعميل --- */
+function clWorkouts(p){
+  const plan=p.workoutPlan||{days:[]};
+  if(!plan.days.length) return `<div class="card flat" style="background:var(--fit-soft);border:none;text-align:center;padding:28px 18px">
+    <div style="font-size:15px;font-weight:600;color:var(--fit);margin-bottom:6px">🌿 طبيبك يجهّز خطتك الرياضية</div>
+    <div class="hint" style="color:#3c7a1f">بتوصلك قريبًا، تابع باقي الأقسام بالمقابل وسجّل قياساتك اليومية</div></div>`;
+  const logs=sortByDate(p.workoutLogs||[]);
+  const days=plan.days.map(d=>{
+    const dlogs=(p.workoutLogs||[]).filter(l=>l.dayId===d.id).sort((a,b)=>a.date<b.date?1:-1);
+    const lastLog=dlogs[0];
+    return `<button class="wo-day" style="width:100%;text-align:right" onclick="openWorkoutDay('${d.id}')">
+      <div class="wo-day-h"><span class="ic">${I.dumbbell}</span>
+        <div style="flex:1"><div style="font-weight:600">${esc(d.name)}</div>
+          <div class="em">${d.exercises.length} تمارين${lastLog?` · آخر جلسة ${daysAgo(lastLog.date)}`:''}</div></div>
+        <span style="color:var(--fit)">${I.plus}</span></div></button>`;
+  }).join("");
+  return `<div class="card flat" style="background:var(--fit-soft);border:none">
+      <div style="font-weight:600;color:var(--fit)">${esc(planSplitLabel(plan)||"خطة تمارينك")}</div>
+      <div class="hint" style="color:#3c7a1f">اختر يوم التمرين وسجّل أوزانك — حاول تتفوّق على آخر جلسة 💪</div></div>
+    ${logs.length>=2?`<div class="card"><div class="sec-title" style="margin-top:0">${I.dumbbell} تقدّمك (حجم التدريب)</div>
+      ${lineChart({values:logs.map(l=>({x:fmtD(l.date),y:sessionVolume(l)})),color:"#4a9127"})}</div>`:''}
+    ${days}
+    ${nutritionCardioCard(p)}`;
+}
+let WO_DAY=null;
+function openWorkoutDay(did){ WO_DAY=did; renderWorkoutDay(); }
+function sessionVolume(entry){ return entry.entries.reduce((s,e)=>s+e.sets.reduce((s2,x)=>s2+(x.w*x.r),0),0); }
+function planSplitLabel(plan){
+  const n=(plan&&plan.days||[]).length;
+  return n? n+" أيام تمرين بالأسبوع" : "";
+}
+function explainRPE(){
+  alert("RPE يعني مستوى الجهد اللي حسّيت فيه أثناء التمرين.\n\n1-2: خفيف جدًا، ما تعبت فيه\n5-6: متوسط، تحس بمجهود واضح\n9-10: أقصى جهد ممكن، ما تقدر تكمل عدّة وحدة زيادة");
+}
+function renderWorkoutDay(){
+  FREEZE_SYNC=true; CURRENT_RENDER=null;
+  const p=getPatient(SESSION.pid); const d=p.workoutPlan.days.find(x=>x.id===WO_DAY);
+  const pastLogs=(p.workoutLogs||[]).filter(l=>l.dayId===d.id).sort((a,b)=>a.date<b.date?1:-1);
+  const prevLog=pastLogs[0];
+  const prevVol=prevLog?sessionVolume(prevLog):null;
+  const exHtml=d.exercises.map((e,ei)=>{
+    const prev=prevLog?prevLog.entries.find(x=>x.name===e.name):null;
+    const nSets=e.sets||3; let boxes="";
+    for(let s=0;s<nSets;s++){
+      const pv=prev&&prev.sets[s]?prev.sets[s]:null;
+      boxes+=`<div class="setbox"><div class="sl">مجموعة ${s+1}</div>
+        <input data-ex="${ei}" data-set="${s}" data-f="w" type="number" inputmode="decimal" placeholder="${pv?pv.w:'—'}"><div class="sw">وزن</div>
+        <input data-ex="${ei}" data-set="${s}" data-f="r" type="number" inputmode="numeric" placeholder="${pv?pv.r:'—'}"><div class="sw">عدّات</div></div>`;
+    }
+    return `<div class="card"><div style="font-weight:600">${esc(e.name)}</div>
+      <div style="font-size:11.5px;color:var(--muted)">${e.sets}×${esc(e.reps)} · راحة ${esc(e.rest)}ث</div>
+      ${prev?`<div class="prev-hint">آخر مرة: ${prev.sets.map(x=>x.w+"×"+x.r).join(" · ")}</div>`:''}
+      <div class="setgrid">${boxes}</div></div>`;
+  }).join("");
+  app().innerHTML=header(d.name,"تسجيل الجلسة",{back:"SESSION.view='workouts';renderClient()"})
+    +`<div class="wrap">
+      ${prevVol?`<div class="banner note">${I.dumbbell}<div>حجم آخر جلسة كان <b>${prevVol.toLocaleString()}</b> (وزن×عدّات). حاول تتفوّق عليه اليوم 💪</div></div>`:''}
+      <div class="hint" style="margin:0 0 12px">اترك الخانة فارغة لتثبيت رقم آخر جلسة (الرمادي).</div>
+      ${exHtml}
+      <div class="card">
+        <div class="sec-title" style="margin-top:0;display:flex;align-items:center;gap:6px">مستوى الشدة المُدرَك (RPE)
+          <button type="button" onclick="explainRPE()"
+            style="width:19px;height:19px;border-radius:50%;background:var(--surface-2);color:var(--muted);font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none">؟</button>
+        </div>
+        <div class="hint" style="margin-bottom:8px">١ = سهل جدًا · ١٠ = أقصى مجهود ممكن</div>
+        <div class="seg" id="seg_rpe">${[...Array(10)].map((_,i)=>`<button onclick="pickSeg('seg_rpe',${i+1})" data-v="${i+1}">${i+1}</button>`).join("")}</div>
+      </div>
+      <div class="card">
+        <div class="sec-title" style="margin-top:0">${I.warn} ألم أو انزعاج أثناء التمرين؟</div>
+        <div class="toggle-cond" style="margin-bottom:10px">
+          <button class="tcond" id="pain_none" onclick="setPainLevel('none')">لا يوجد</button>
+          <button class="tcond" id="pain_mild" onclick="setPainLevel('mild')">خفيف</button>
+          <button class="tcond" id="pain_strong" onclick="setPainLevel('strong')">واضح / أوقفت التمرين</button>
+        </div>
+        <textarea id="pain_note" rows="2" placeholder="وين كان الألم؟ (اختياري)"></textarea>
+      </div>
+      <button class="btn fit" onclick="saveWorkoutLog('${d.id}')">${I.check} حفظ الجلسة</button></div>`;
+  setPainLevel("none");
+}
+let PAIN_LEVEL="none";
+function setPainLevel(lv){
+  PAIN_LEVEL=lv;
+  ["none","mild","strong"].forEach(k=>{const el=$("#pain_"+k); if(el) el.classList.toggle("on",k===lv);});
+}
+function saveWorkoutLog(did){
+  const p=getPatient(SESSION.pid); const d=p.workoutPlan.days.find(x=>x.id===did);
+  const entries=d.exercises.map((e,ei)=>{
+    const sets=[];
+    for(let s=0;s<(e.sets||3);s++){
+      const w=document.querySelector(`[data-ex="${ei}"][data-set="${s}"][data-f="w"]`);
+      const r=document.querySelector(`[data-ex="${ei}"][data-set="${s}"][data-f="r"]`);
+      const wv=w&&w.value?+w.value:(w&&w.placeholder&&w.placeholder!=='—'?+w.placeholder:null);
+      const rv=r&&r.value?+r.value:(r&&r.placeholder&&r.placeholder!=='—'?+r.placeholder:null);
+      if(wv||rv) sets.push({w:wv||0,r:rv||0});
+    }
+    return {name:e.name,sets};
+  }).filter(x=>x.sets.length);
+  if(!entries.length){alert("سجّل وزنًا أو عدّة واحدة على الأقل");return;}
+  const rpe=SEGVAL.seg_rpe||null;
+  const painNote=$("#pain_note")?$("#pain_note").value.trim():"";
+  p.workoutLogs.push({date:todayISO(),dayId:did,dayName:d.name,entries,rpe,pain:PAIN_LEVEL,painNote});
+  SEGVAL={}; PAIN_LEVEL="none";
+  saveDB(); SESSION.view="workouts"; renderClient();
+}
+function renderPatients(){
+  FREEZE_SYNC=false;
+  CURRENT_RENDER=renderPatients;
+  const ps=DB.patients;
+  const flagged=ps.filter(p=>patientFlags(p).length).length;
+  let cards;
+  if(ps.length===0){
+    cards=`<div class="empty">لا يوجد مرضى بعد.<br>أضف أول مريض من الزر بالأسفل.</div>`;
+  }else{
+    cards=`<div class="plist">`+ps.map(p=>{
+      const fl=patientFlags(p);
+      const g=last(p.logs.glucose), b=last(p.logs.bp);
+      const gst=g?glucoseStatus(g.value,g.type,p.targets)[0]:null;
+      const bst=b?bpStatus(b.sys,b.dia)[0]:null;
+      const ml=medLoad(p);
+      const streak=computeStreak(p);
+      const lastlog=[g,b,last(p.logs.weight)].filter(Boolean).map(x=>x.date).sort().slice(-1)[0];
+      return `<button class="pcard ${fl.length?'flagged':''}" onclick="openPatient('${p.id}')">
+        <div class="pcard-top">
+          <span class="avatar">${esc(p.name[0]||"؟")}</span>
+          <div style="flex:1">
+            <div class="pcard-name">${esc(p.name)} ${streak>=3?`<span class="chip acc" style="font-size:10.5px">${I.flame} ${streak}</span>`:''}</div>
+            <div class="chips" style="margin-top:5px">
+              ${p.conditions.diabetes?'<span class="chip pri">سكر</span>':''}
+              ${p.conditions.hypertension?'<span class="chip pri">ضغط</span>':''}
+              ${p.conditions.dyslipidemia?'<span class="chip pri">دهون</span>':''}
+              ${p.conditions.vitaminD?'<span class="chip pri">فيتامين د</span>':''}
+              ${p.conditions.thyroid?'<span class="chip pri">الغدة</span>':''}
+            </div>
+          </div>
+          ${fl.length?`<span class="chip alert">⚠ ${fl.join(" · ")}</span>`:''}
+        </div>
+        <div class="pcard-metrics">
+          <div class="metric"><div class="lbl">سكر صائم</div><div class="val">${g?`<span class="dot ${gst}"></span>${g.value}<small>mg/dL</small>`:'<span class="faint">—</span>'}</div></div>
+          <div class="metric"><div class="lbl">الضغط</div><div class="val">${b?`<span class="dot ${bst}"></span>${b.sys}/${b.dia}`:'<span class="faint">—</span>'}</div></div>
+          <div class="metric"><div class="lbl">الأدوية</div><div class="val">${ml.active+ml.reduced}<small>فعّال</small></div></div>
+        </div>
+        <div class="hint" style="margin-top:9px">آخر تحديث: ${daysAgo(lastlog)||"لا يوجد"}</div>
+      </button>`;
+    }).join("")+`</div>`;
+  }
+  app().innerHTML=header("المرضى",DB.clinic.doctorName,{
+    ctx:`<div class="hdr-ctx" style="display:flex;gap:10px">
+      <div style="flex:1;background:rgba(255,255,255,.13);border-radius:13px;padding:10px 13px">
+        <div style="font-size:11px;opacity:.8">إجمالي المرضى</div><div style="font-size:20px;font-weight:700">${ps.length}</div></div>
+      <div style="flex:1;background:rgba(255,255,255,.13);border-radius:13px;padding:10px 13px">
+        <div style="font-size:11px;opacity:.8">يحتاجون انتباه</div><div style="font-size:20px;font-weight:700">${flagged}</div></div>
+    </div>`
+  })
+  +`<div class="wrap">${cards}</div>`
+  +`<button class="fab" onclick="patientForm()">${I.plus}</button>`
+  +docNav();
+}
+
+/* ---------- نموذج إضافة/تعديل مريض ---------- */
+function patientForm(id){
+  const p=id?getPatient(id):null;
+  const c=p?p.conditions:{diabetes:true,hypertension:false,dyslipidemia:false,vitaminD:false,thyroid:false};
+  openSheet(`<h3>${p?"تعديل بيانات المريض":"مريض جديد"}</h3>
+    <div class="field"><label>الاسم</label><input id="f_name" value="${p?esc(p.name):''}"></div>
+    <div class="row"><div class="field"><label>العمر</label><input id="f_age" type="number" value="${p?p.age:''}"></div>
+      <div class="field"><label>الجنس</label><select id="f_gender"><option ${p&&p.gender==='ذكر'?'selected':''}>ذكر</option><option ${p&&p.gender==='أنثى'?'selected':''}>أنثى</option></select></div></div>
+    <div class="field"><label>الحالات</label>
+      <div class="toggle-cond">
+        <button class="tcond ${c.diabetes?'on':''}" id="c_d" onclick="this.classList.toggle('on')">سكري</button>
+        <button class="tcond ${c.hypertension?'on':''}" id="c_h" onclick="this.classList.toggle('on')">ضغط</button>
+        <button class="tcond ${c.dyslipidemia?'on':''}" id="c_l" onclick="this.classList.toggle('on')">دهون</button>
+        <button class="tcond ${c.vitaminD?'on':''}" id="c_vd" onclick="this.classList.toggle('on')">نقص فيتامين د</button>
+        <button class="tcond ${c.thyroid?'on':''}" id="c_thy" onclick="this.classList.toggle('on')">متابعة الغدة الدرقية</button>
+      </div></div>
+    <div class="row"><div class="field"><label>رمز دخول العميل</label><input id="f_code" value="${p?esc(p.accessCode):Math.floor(1000+Math.random()*9000)}"></div>
+      <div class="field"><label>الهاتف (اختياري)</label><input id="f_phone" value="${p?esc(p.phone):''}"></div></div>
+    <div class="sec-title">القيم المرجعية (الأهداف)</div>
+    <div class="row"><div class="field"><label>سكر صائم من</label><input id="t_fmin" type="number" value="${p?p.targets.fbgMin:80}"></div>
+      <div class="field"><label>إلى</label><input id="t_fmax" type="number" value="${p?p.targets.fbgMax:130}"></div></div>
+    <div class="row"><div class="field"><label>تراكمي HbA1c ≤</label><input id="t_a1c" type="number" step="0.1" value="${p?p.targets.hba1c:7}"></div>
+      <div class="field"><label>LDL ≤</label><input id="t_ldl" type="number" value="${p?p.targets.ldl:100}"></div></div>
+    <div class="row"><div class="field"><label>ضغط انقباضي ≤</label><input id="t_sbp" type="number" value="${p?p.targets.sbp:130}"></div>
+      <div class="field"><label>انبساطي ≤</label><input id="t_dbp" type="number" value="${p?p.targets.dbp:80}"></div></div>
+    <div class="row"><div class="field"><label>وزن هدف</label><input id="t_w" type="number" step="0.1" value="${p?p.targets.weight:''}"></div>
+      <div class="field"><label>خصر هدف</label><input id="t_waist" type="number" value="${p?p.targets.waist:''}"></div></div>
+    <div class="sec-title">${I.flask} الأهداف الغذائية اليومية</div>
+    <div class="field"><label>السعرات المستهدفة (Cal)</label><input id="t_cal" type="number" value="${p?p.targets.calTarget||'':''}" placeholder="مثال: 2000"></div>
+    <div class="row">
+      <div class="field"><label>كاربوهيدرات (g)</label><input id="t_carbs" type="number" value="${p?p.targets.carbsTarget||'':''}"></div>
+      <div class="field"><label>بروتين (g)</label><input id="t_protein" type="number" value="${p?p.targets.proteinTarget||'':''}"></div>
+      <div class="field"><label>دهون (g)</label><input id="t_fat" type="number" value="${p?p.targets.fatTarget||'':''}"></div>
+    </div>
+    <p class="hint" style="margin:0 0 4px">مرجع سريع: كل غرام كارب أو بروتين = ٤ سعرات، كل غرام دهون = ٩ سعرات.</p>
+    <button class="btn" onclick="savePatient('${id||''}')">${p?"حفظ":"إضافة المريض"}</button>
+    ${p?`<button class="btn danger" style="margin-top:9px" onclick="delPatient('${id}')">حذف المريض</button>`:''}`);
+}
+function savePatient(id){
+  const name=$("#f_name").value.trim(); if(!name){alert("أدخل الاسم");return;}
+  const data={
+    name,age:+$("#f_age").value||0,gender:$("#f_gender").value,phone:$("#f_phone").value.trim(),
+    accessCode:$("#f_code").value.trim(),
+    conditions:{diabetes:$("#c_d").classList.contains("on"),hypertension:$("#c_h").classList.contains("on"),dyslipidemia:$("#c_l").classList.contains("on"),vitaminD:$("#c_vd").classList.contains("on"),thyroid:$("#c_thy").classList.contains("on")},
+    targets:{fbgMin:+$("#t_fmin").value,fbgMax:+$("#t_fmax").value,hba1c:+$("#t_a1c").value,ldl:+$("#t_ldl").value,sbp:+$("#t_sbp").value,dbp:+$("#t_dbp").value,weight:+$("#t_w").value||null,waist:+$("#t_waist").value||null,calTarget:+$("#t_cal").value||null,carbsTarget:+$("#t_carbs").value||null,proteinTarget:+$("#t_protein").value||null,fatTarget:+$("#t_fat").value||null}
+  };
+  if(id){ Object.assign(getPatient(id),data); }
+  else{ DB.patients.push({id:uid(),...data,startDate:todayISO(),meds:[],consentAccepted:false,logs:{glucose:[],bp:[],weight:[],labs:[],lifestyle:[],wellbeing:[],adherence:[],cardio:[],nutrition:[]},notes:[],workoutPlan:{split:"",days:[]},workoutLogs:[]}); }
+  saveDB(); closeSheet(); renderPatients();
+}
+function delPatient(id){ if(!confirm("حذف المريض وكل بياناته؟"))return; DB.patients=DB.patients.filter(p=>p.id!==id); saveDB(); closeSheet(); renderPatients(); }
+
+/* ---------- صفحة المريض (الطبيب) ---------- */
+let PT_TAB="overview";
+function openPatient(id){ SESSION.pid=id; PT_TAB="overview"; renderPatient(); }
+function renderPatient(){
+  FREEZE_SYNC=false;
+  CURRENT_RENDER=renderPatient;
+  const p=getPatient(SESSION.pid); if(!p){renderPatients();return;}
+  const tabs=[["overview","نظرة عامة"],["readings","القياسات"],["meds","الأدوية"],["workouts","التمارين"],["lifestyle","النمط"],["wellbeing","الإحساس"],["notes","ملاحظات"]];
+  let body="";
+  if(PT_TAB==="overview") body=ptOverview(p);
+  else if(PT_TAB==="readings") body=ptReadings(p);
+  else if(PT_TAB==="meds") body=ptMeds(p,true);
+  else if(PT_TAB==="workouts") body=ptWorkouts(p);
+  else if(PT_TAB==="lifestyle") body=ptLifestyle(p);
+  else if(PT_TAB==="wellbeing") body=ptWellbeing(p);
+  else if(PT_TAB==="notes") body=ptNotes(p);
+  app().innerHTML=header(p.name,(p.age?p.age+" سنة · ":"")+(p.gender||""),{back:"renderPatients()",
+    ctx:`<div class="hdr-ctx"><div class="chips">
+      ${p.conditions.diabetes?'<span class="chip" style="background:rgba(255,255,255,.16);color:#fff;border:none">سكري</span>':''}
+      ${p.conditions.hypertension?'<span class="chip" style="background:rgba(255,255,255,.16);color:#fff;border:none">ضغط</span>':''}
+      ${p.conditions.dyslipidemia?'<span class="chip" style="background:rgba(255,255,255,.16);color:#fff;border:none">دهون</span>':''}
+      ${p.conditions.vitaminD?'<span class="chip" style="background:rgba(255,255,255,.16);color:#fff;border:none">فيتامين د</span>':''}
+      ${p.conditions.thyroid?'<span class="chip" style="background:rgba(255,255,255,.16);color:#fff;border:none">الغدة</span>':''}
+      <span class="chip" style="background:rgba(255,255,255,.16);color:#fff;border:none">منذ ${fmtD(p.startDate)}</span>
+    </div></div>`})
+  +`<div class="wrap">
+      <div class="tabs">${tabs.map(([k,l])=>`<button class="tab ${PT_TAB===k?'active':''}" onclick="PT_TAB='${k}';renderPatient()">${l}</button>`).join("")}</div>
+      ${body}
+    </div>`;
+}
+
+function deltaCalc(arr,key,invert){ // اتجاه: مقارنة آخر قراءة بأول قراءة
+  const s=sortByDate(arr); if(s.length<2)return null;
+  const a=key?s[0][key]:s[0].value, b=key?s[s.length-1][key]:s[s.length-1].value;
+  const diff=b-a; const cls=diff===0?"flat":((invert?diff<0:diff>0)?"up":"down");
+  return{diff:+diff.toFixed(1),cls};
+}
+function ptOverview(p){
+  const g=last(p.logs.glucose),b=last(p.logs.bp),w=last(p.logs.weight),lab=last(p.logs.labs);
+  const fl=patientFlags(p), ml=medLoad(p);
+  const gd=deltaCalc(p.logs.glucose,null,false), wd=deltaCalc(p.logs.weight,"value",false);
+  function statCard(lbl,icon,val,unit,delta,st){
+    return `<div class="stat"><div class="lbl">${icon} ${lbl}</div>
+      <div class="big">${val!=null?val:'<span class="faint">—</span>'}${unit?` <small>${unit}</small>`:''} ${st?`<span class="dot ${st}" style="vertical-align:middle"></span>`:''}</div>
+      ${delta?`<div class="delta ${delta.cls}">${delta.diff>0?'▲':delta.diff<0?'▼':'■'} ${Math.abs(delta.diff)} ${delta.cls==='down'?'(تحسّن)':delta.cls==='up'?'(ارتفاع)':''}</div>`:''}</div>`;
+  }
+  let banner="";
+  if(fl.length) banner=`<div class="banner alert">${I.warn}<div><b>تنبيه:</b> آخر قراءة ${fl.join(" و")} خارج النطاق الآمن. يُنصح بالمراجعة.</div></div>`;
+  const actions=`<div class="row" style="margin-bottom:14px">
+    <button class="btn wa sm" style="flex:1" onclick="waShare('${p.id}')">${I.wa} مشاركة الدخول واتساب</button>
+    <button class="btn line sm" style="flex:none;width:auto" onclick="patientForm('${p.id}')">تعديل البيانات</button>
+  </div>`;
+  return banner+actions+`<div class="statgrid">
+    ${statCard("سكر صائم",I.drop,g?g.value:null,"mg/dL",gd,g?glucoseStatus(g.value,g.type,p.targets)[0]:null)}
+    ${statCard("الضغط",I.heart,b?b.sys+"/"+b.dia:null,"",null,b?bpStatus(b.sys,b.dia)[0]:null)}
+    ${statCard("الوزن",I.scale,w?w.value:null,"كجم",wd,null)}
+    ${statCard("HbA1c",I.flask,lab?lab.hba1c:null,"%",deltaCalc(p.logs.labs,"hba1c",false),lab?(lab.hba1c<=p.targets.hba1c?"good":"watch"):null)}
+  </div>
+  <div class="card">
+    <div class="sec-title" style="margin-top:0">${I.pill} حِمل الدواء</div>
+    <div class="chips">
+      <span class="chip pri">${ml.active} فعّال</span>
+      ${ml.reduced?`<span class="chip acc">${ml.reduced} مُخفّض</span>`:''}
+      ${ml.stopped?`<span class="chip good">${ml.stopped} موقوف</span>`:''}
+    </div>
+    ${ml.stopped+ml.reduced>0?`<div class="hint" style="margin-top:9px">رحلة التقليل: تم تخفيف/إيقاف ${ml.stopped+ml.reduced} من أصل ${ml.total} أدوية 👏</div>`:''}
+  </div>
+  <div class="card"><div class="sec-title" style="margin-top:0">${I.drop} اتجاه السكر الصائم</div>
+    ${lineChart({values:sortByDate(p.logs.glucose).filter(x=>x.type==='fasting').map(x=>({x:fmtD(x.date),y:x.value})),bandMin:p.targets.fbgMin,bandMax:p.targets.fbgMax,unit:"",color:"#13564b"})}
+  </div>
+  <div class="card"><div class="sec-title" style="margin-top:0">${I.heart} اتجاه الضغط الانقباضي</div>
+    ${lineChart({values:sortByDate(p.logs.bp).map(x=>({x:fmtD(x.date),y:x.sys})),bandMax:p.targets.sbp,bandMin:90,color:"#c0442d"})}
+  </div>`;
+}
+
+function ptReadings(p){
+  return `<div class="card"><div class="sec-title" style="margin-top:0">${I.flask} آخر تحليل مخبري</div>
+    ${last(p.logs.labs)?(()=>{const l=last(p.logs.labs);
+      const vdDot=l.vitaminD!=null?(l.vitaminD<20?"alert":l.vitaminD<30?"watch":"good"):null;
+      return`
+      <div class="kvi"><span class="k">HbA1c</span><span>${l.hba1c}% <span class="dot ${l.hba1c<=p.targets.hba1c?'good':'watch'}"></span></span></div>
+      <div class="kvi"><span class="k">LDL (الضار)</span><span>${l.ldl} <span class="dot ${l.ldl<=p.targets.ldl?'good':'watch'}"></span></span></div>
+      <div class="kvi"><span class="k">HDL (النافع)</span><span>${l.hdl}</span></div>
+      <div class="kvi"><span class="k">الدهون الثلاثية</span><span>${l.tg}</span></div>
+      <div class="kvi"><span class="k">الكوليسترول الكلي</span><span>${l.tc}</span></div>
+      ${l.vitaminD!=null?`<div class="kvi"><span class="k">فيتامين د</span><span>${l.vitaminD} ng/mL <span class="dot ${vdDot}"></span></span></div>`:''}
+      ${l.tsh!=null?`<div class="kvi"><span class="k">TSH</span><span>${l.tsh}</span></div>`:''}
+      ${l.t3!=null?`<div class="kvi"><span class="k">T3</span><span>${l.t3}</span></div>`:''}
+      ${l.t4!=null?`<div class="kvi"><span class="k">T4</span><span>${l.t4}</span></div>`:''}
+      <div class="hint" style="margin-top:8px">بتاريخ ${fmtDFull(l.date)}</div>`;})():'<div class="empty">لا توجد تحاليل</div>'}
+    <button class="btn ghost sm" style="margin-top:12px;width:100%" onclick="logSheet('${p.id}','labs')">${I.plus} إضافة تحليل</button>
+  </div>
+  ${histCard(p,"glucose","قراءات السكر",x=>`${x.value} <small class="muted">mg/dL · ${x.type==='fasting'?'صائم':'بعد الأكل'}</small>`,glucoseStatus,p)}
+  ${histCard(p,"bp","قراءات الضغط",x=>`${x.sys}/${x.dia}`,(x)=>bpStatus(x.sys,x.dia))}
+  ${histCard(p,"weight","الوزن والخصر",x=>`${x.value} كجم${x.waist?` · خصر ${x.waist}`:''}`)}`;
+}
+function histCard(p,key,title,fmt,statusFn){
+  const arr=sortByDate(p.logs[key]).slice(-6).reverse();
+  return `<div class="card"><div class="sec-title" style="margin-top:0">${title}
+    <button class="btn ghost sm" style="margin-inline-start:auto" onclick="logSheet('${p.id}','${key}')">${I.plus} إضافة</button></div>
+    ${arr.length?arr.map(x=>{
+      let st=null; if(statusFn){ st=key==='glucose'?statusFn(x.value,x.type,p)[0]:statusFn(x)[0]; }
+      return `<div class="kvi"><span class="k">${fmtDFull(x.date)}</span><span>${st?`<span class="dot ${st}"></span> `:''}${fmt(x)}</span></div>`;
+    }).join(""):'<div class="empty">لا توجد قراءات</div>'}
+  </div>`;
+}
+
+function ptMeds(p,isDoc){
+  const list=p.meds.length?p.meds.map(m=>`
+    <div class="med">
+      <div class="med-top"><div><div class="nm">${esc(m.name)} <span class="muted" style="font-size:13px">${esc(m.dose)}</span></div>
+        <div class="ds">${esc(m.freq)} · ${esc(m.cond)}</div></div>
+        ${isDoc?`<button class="btn ghost sm" onclick="medForm('${p.id}','${m.id}')">تعديل</button>`:''}
+      </div>
+      ${m.note?`<div class="hint" style="margin-top:7px">📝 ${esc(m.note)}</div>`:''}
+      ${isDoc?`<div class="statusbar">
+        <button class="sbtn ${m.status==='active'?'on-active':''}" onclick="askMedStatus('${p.id}','${m.id}','active')">فعّال</button>
+        <button class="sbtn ${m.status==='reduced'?'on-reduced':''}" onclick="askMedStatus('${p.id}','${m.id}','reduced')">مُخفّض</button>
+        <button class="sbtn ${m.status==='stopped'?'on-stopped':''}" onclick="askMedStatus('${p.id}','${m.id}','stopped')">موقوف</button>
+      </div>`:`<div class="chips" style="margin-top:9px"><span class="chip ${m.status==='active'?'pri':m.status==='reduced'?'acc':'good'}">${m.status==='active'?'فعّال':m.status==='reduced'?'مُخفّض':'موقوف'} · ${fmtD(m.updatedAt)}</span></div>`}
+      ${(m.history&&m.history.length)?`<button class="btn ghost sm" style="width:100%;margin-top:9px" onclick="medHistory('${p.id}','${m.id}')">${I.note} سجل التغييرات (${m.history.length})</button>`:''}
+    </div>`).join(""):'<div class="empty">لا توجد أدوية مسجّلة</div>';
+  return `<div class="banner accent">${I.shield}<div>تتبّع الأدوية وتعديلها قرار طبي يتخذه الطبيب المعالج بناءً على القياسات والتحاليل. كل تغيير حالة يُسجَّل بتاريخه وسببه ولا يُمحى.</div></div>
+    ${list}
+    ${isDoc?`<button class="btn" style="margin-top:6px" onclick="medForm('${p.id}')">${I.plus} إضافة دواء</button>`:''}`;
+}
+/* طلب سبب التغيير قبل تحديث حالة الدواء — يُبنى منه سجل توقيع دائم */
+function askMedStatus(pid,mid,st){
+  const p=getPatient(pid); const m=p.meds.find(x=>x.id===mid);
+  if(m.status===st){return;}
+  const lbl={active:"فعّال",reduced:"مُخفّض",stopped:"موقوف"};
+  const g=last(p.logs.glucose),b=last(p.logs.bp),lab=last(p.logs.labs);
+  openSheet(`<h3>تغيير حالة: ${esc(m.name)}</h3>
+    <p class="hint" style="margin-bottom:10px">من «${lbl[m.status]}» إلى «${lbl[st]}». اذكر السبب السريري — يُحفظ في سجل الدواء بشكل دائم.</p>
+    <div class="card flat" style="background:var(--surface-2);margin-bottom:12px">
+      <div class="kvi"><span class="k">آخر سكر صائم</span><span>${g?g.value+" mg/dL ("+fmtD(g.date)+")":"—"}</span></div>
+      <div class="kvi"><span class="k">آخر ضغط</span><span>${b?b.sys+"/"+b.dia+" ("+fmtD(b.date)+")":"—"}</span></div>
+      <div class="kvi"><span class="k">آخر HbA1c</span><span>${lab?lab.hba1c+"% ("+fmtD(lab.date)+")":"—"}</span></div>
+    </div>
+    <div class="field"><label>السبب / الأساس السريري</label><textarea id="mh_reason" rows="3" placeholder="مثال: تحسّن HbA1c إلى 7.2% مع التزام جيد بالنمط الغذائي"></textarea></div>
+    <button class="btn" onclick="commitMedStatus('${pid}','${mid}','${st}')">تأكيد وحفظ في السجل</button>`);
+}
+function commitMedStatus(pid,mid,st){
+  const reason=$("#mh_reason").value.trim();
+  if(!reason){alert("اذكر السبب قبل الحفظ — هذا يُبنى منه سجل التوقيع الطبي");return;}
+  const p=getPatient(pid); const m=p.meds.find(x=>x.id===mid);
+  const g=last(p.logs.glucose),b=last(p.logs.bp),lab=last(p.logs.labs);
+  if(!m.history) m.history=[];
+  m.history.push({date:todayISO(),from:m.status,to:st,reason,
+    snapshot:{glucose:g?g.value:null,bp:b?`${b.sys}/${b.dia}`:null,hba1c:lab?lab.hba1c:null}});
+  m.status=st; m.updatedAt=todayISO();
+  saveDB(); closeSheet();
+  (SESSION.role==='doctor'?renderPatient():renderClient());
+}
+function medHistory(pid,mid){
+  const p=getPatient(pid); const m=p.meds.find(x=>x.id===mid);
+  const lbl={active:"فعّال",reduced:"مُخفّض",stopped:"موقوف"};
+  const rows=[...m.history].reverse().map(h=>`
+    <div class="card flat" style="background:var(--surface-2);margin-bottom:9px">
+      <div style="font-weight:600;font-size:13.5px">${lbl[h.from]} ← ${lbl[h.to]} <span class="muted" style="font-weight:400">· ${fmtDFull(h.date)}</span></div>
+      <div class="hint" style="margin-top:5px">${esc(h.reason)}</div>
+      <div class="hint" style="margin-top:5px;color:var(--faint)">وقت القرار: سكر ${h.snapshot.glucose||"—"} · ضغط ${h.snapshot.bp||"—"} · HbA1c ${h.snapshot.hba1c||"—"}%</div>
+    </div>`).join("");
+  openSheet(`<h3>سجل ${esc(m.name)}</h3>${rows||'<div class="empty">لا يوجد سجل بعد</div>'}`);
+}
+function medForm(pid,mid){
+  const p=getPatient(pid); const m=mid?p.meds.find(x=>x.id===mid):null;
+  openSheet(`<h3>${m?"تعديل دواء":"دواء جديد"}</h3>
+    <div class="field"><label>اسم الدواء</label><input id="m_name" value="${m?esc(m.name):''}"></div>
+    <div class="row"><div class="field"><label>الجرعة</label><input id="m_dose" value="${m?esc(m.dose):''}" placeholder="500mg"></div>
+      <div class="field"><label>التكرار</label><input id="m_freq" value="${m?esc(m.freq):''}" placeholder="مرتين يوميًا"></div></div>
+    <div class="field"><label>لأي حالة</label><select id="m_cond"><option>سكر</option><option>ضغط</option><option>دهون</option><option>أخرى</option></select></div>
+    <div class="field"><label>ملاحظة (سبب التخفيض/الإيقاف مثلًا)</label><textarea id="m_note" rows="2">${m?esc(m.note):''}</textarea></div>
+    <button class="btn" onclick="saveMed('${pid}','${mid||''}')">حفظ</button>
+    ${m?`<button class="btn danger" style="margin-top:9px" onclick="delMed('${pid}','${mid}')">حذف الدواء</button>`:''}`);
+  if(m)setTimeout(()=>{$("#m_cond").value=m.cond;},50);
+}
+function saveMed(pid,mid){
+  const p=getPatient(pid); const name=$("#m_name").value.trim(); if(!name){alert("أدخل الاسم");return;}
+  const d={name,dose:$("#m_dose").value.trim(),freq:$("#m_freq").value.trim(),cond:$("#m_cond").value,note:$("#m_note").value.trim()};
+  if(mid){Object.assign(p.meds.find(x=>x.id===mid),d);}
+  else{p.meds.push({id:uid(),...d,status:"active",updatedAt:todayISO(),history:[]});}
+  saveDB();closeSheet();renderPatient();
+}
+function delMed(pid,mid){const p=getPatient(pid);p.meds=p.meds.filter(x=>x.id!==mid);saveDB();closeSheet();renderPatient();}
+
+function ptLifestyle(p){
+  const l=last(p.logs.lifestyle);
+  return `<div class="statgrid">
+    <div class="stat"><div class="lbl">${I.spark} خطوات اليوم</div><div class="big">${l?l.steps:'—'}${l&&l.source==='auto'?` <span class="chip good" style="font-size:9.5px;padding:2px 7px">تلقائي</span>`:''}</div></div>
+    <div class="stat"><div class="lbl">${I.heart} نبض الاستراحة</div><div class="big">${l&&l.heartRate?l.heartRate:'—'}${l&&l.heartRate?'<small> bpm</small>':''}</div></div>
+    <div class="stat"><div class="lbl">${I.bed} نوم</div><div class="big">${l?l.sleepHrs:'—'}<small> س</small></div></div>
+    <div class="stat"><div class="lbl">${I.spark} نشاط</div><div class="big">${l?l.activityMin:'—'}<small> د</small></div></div>
+    <div class="stat"><div class="lbl">${I.flame} سعرات محروقة</div><div class="big">${l&&l.calBurned?l.calBurned:'—'}${l&&l.calBurned?'<small> Cal</small>':''}</div></div>
+  </div>
+  <div class="card"><div class="sec-title" style="margin-top:0">${I.spark} اتجاه الخطوات</div>
+    ${lineChart({values:sortByDate(p.logs.lifestyle).map(x=>({x:fmtD(x.date),y:x.steps})),color:"#1d7163"})}</div>
+  <div class="card"><div class="sec-title" style="margin-top:0">${I.flame} اتجاه السعرات المحروقة</div>
+    ${lineChart({values:sortByDate(p.logs.lifestyle).filter(x=>x.calBurned).map(x=>({x:fmtD(x.date),y:x.calBurned})),color:"#d98e48"})}</div>
+  <div class="card"><div class="sec-title" style="margin-top:0">${I.heart} اتجاه نبض الاستراحة</div>
+    ${lineChart({values:sortByDate(p.logs.lifestyle).filter(x=>x.heartRate).map(x=>({x:fmtD(x.date),y:x.heartRate})),color:"#c0442d"})}</div>
+  <button class="btn fit" onclick="logSheet('${p.id}','lifestyle')">${I.plus} تسجيل نمط اليوم (أقل من ١٠ ثواني)</button>
+  <div class="card" style="margin-top:14px">
+    <div class="sec-title" style="margin-top:0">${I.sync} ربط تلقائي مع تطبيق الصحة</div>
+    <p class="hint" style="margin-bottom:10px">إعداد لمرة وحدة (٥ دقائق) على جوال المريض، وبعدها الخطوات والنشاط والنبض والسعرات تتسجّل لوحدها كل يوم بدون ما يفتح المريض التطبيق (النوم يبقى تسجيل يدوي بسيط).</p>
+    <div class="row">
+      <button class="btn ghost sm" style="flex:1" onclick="copyAutoLink('${p.id}')">${I.check} نسخ رابط المريض</button>
+      <button class="btn line sm" onclick="autoLinkGuide()">شرح الإعداد</button>
+    </div>
+  </div>`;
+}
+/* رابط الربط التلقائي: يحمل رمز دخول المريض + رابط التطبيق، ليُستخدم داخل Shortcut في آيفون */
+function autoLogUrl(p){
+  const base=DB.clinic.appUrl||"(احفظ رابط التطبيق أولًا من الإعدادات)";
+  return `${base}?autolog=1&code=${encodeURIComponent(p.accessCode)}&steps=STEPS&activity=ACTIVITY&hr=HR&cal=CAL`;
+}
+function copyAutoLink(pid){
+  const p=getPatient(pid);
+  if(!DB.clinic.appUrl){alert("احفظ رابط التطبيق أولًا من تبويب الإعدادات");return;}
+  const url=autoLogUrl(p);
+  const done=()=>alert("تم نسخ الرابط. الصقه بإجراء «Open URLs» جوا الأتمتة، واستبدل كل كلمة كبيرة (STEPS, ACTIVITY, HR, CAL) بنتيجة إجراء Calculate Statistics المطابق لها.");
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done).catch(()=>{prompt("انسخ الرابط:",url);});}
+  else{prompt("انسخ الرابط:",url);}
+}
+function autoLinkGuide(){
+  openSheet(`<h3>${I.sync} إعداد الربط التلقائي (٥ دقائق، مرة وحدة)</h3>
+    <p class="hint" style="margin-bottom:10px">هذي الأتمتة تجيب ٤ أرقام من تطبيق الصحة تلقائيًا كل يوم: الخطوات، دقائق النشاط، نبض الاستراحة، والسعرات المحروقة. النوم يبقى تسجيل يدوي بسيط (ثانية وحدة كل صباح)، لأن بيانات النوم بتطبيق آبل مو رقم مباشر ويصعب حسابها تلقائيًا.</p>
+    <div class="kvi"><span class="k">١</span><span>افتح تطبيق <b>Shortcuts</b> ← تبويب <b>Automation</b> ← <b>+</b> ← <b>Create Personal Automation</b>.</span></div>
+    <div class="kvi"><span class="k">٢</span><span>اختر <b>Time of Day</b> ← أي وقت مناسب (مثلًا ٩ مساءً) ← Daily ← Next ← أطفئ <b>Ask Before Running</b>.</span></div>
+    <div class="kvi"><span class="k">٣</span><span>لكل مقياس من الأربعة، أضف زوج إجراءات: <b>Find Health Samples</b> (Type = النوع المطلوب، Start Date = <b>is Today</b>) ثم <b>Calculate Statistics</b> (Sum للخطوات/النشاط/السعرات، Average للنبض). الأنواع المطلوبة بالضبط: <b>Steps</b>، <b>Exercise Time</b>، <b>Resting Heart Rate</b> (وليس Heart Rate العادي)، <b>Active Calories</b>.</span></div>
+    <div class="kvi"><span class="k">٤</span><span>أضف إجراء <b>Open URLs</b> ← الصق رابط المريض (انسخه من الزر السابق) ← اضغط مكان كل كلمة كبيرة (STEPS, ACTIVITY, HR, CAL) واستبدلها بنتيجة Calculate Statistics المطابقة (تظهر كـ"كبسولة" ملوّنة، مو نص عادي).</span></div>
+    <div class="kvi"><span class="k">٥</span><span>احفظ الأتمتة. من الآن، جوال المريض يرسل الأرقام الأربعة تلقائيًا كل يوم بدون أي تدخل منه.</span></div>
+    <p class="hint" style="margin-top:10px">لو أي متغيّر ما توفّر (مثلًا ما عنده Apple Watch لقياس النبض)، اتركه فاضي بالرابط — باقي الأرقام تسجّل عادي. والتسجيل اليدوي شغّال دائمًا كبديل أو إضافة، وهو الطريقة الموصى بها للنوم تحديدًا.</p>`);
+}
+function ptWellbeing(p){
+  const w=last(p.logs.wellbeing);
+  const faces=["😣","😕","😐","🙂","😄"];
+  return `<div class="statgrid">
+    <div class="stat"><div class="lbl">${I.battery} الطاقة</div><div class="big">${w?faces[w.energy-1]+" "+w.energy+"/5":'—'}</div></div>
+    <div class="stat"><div class="lbl">${I.warn} الإجهاد/التعب</div><div class="big">${w?faces[5-w.fatigue]+" "+w.fatigue+"/5":'—'}</div></div>
+  </div>
+  <div class="card"><div class="sec-title" style="margin-top:0">اتجاه الطاقة</div>
+    ${lineChart({values:sortByDate(p.logs.wellbeing).map(x=>({x:fmtD(x.date),y:x.energy})),color:"#d98e48",bandMin:1,bandMax:5})}</div>
+  <div class="card"><div class="sec-title" style="margin-top:0">سجل الإحساس</div>
+    ${sortByDate(p.logs.wellbeing).slice(-6).reverse().map(x=>`<div class="kvi"><span class="k">${fmtDFull(x.date)}</span><span>طاقة ${faces[x.energy-1]} · تعب ${x.fatigue}/5${x.note?' · '+esc(x.note):''}</span></div>`).join("")||'<div class="empty">لا يوجد</div>'}</div>
+  <button class="btn ghost" onclick="logSheet('${p.id}','wellbeing')">${I.plus} تسجيل الإحساس</button>`;
+}
+function ptNotes(p){
+  return `<button class="btn" style="margin-bottom:14px" onclick="noteForm('${p.id}')">${I.plus} ملاحظة جديدة</button>
+    ${sortByDate(p.notes).reverse().map(n=>`<div class="card"><div class="hint" style="margin:0 0 6px">${fmtDFull(n.date)}</div>${esc(n.text)}</div>`).join("")||'<div class="empty">لا توجد ملاحظات</div>'}`;
+}
+function noteForm(pid){
+  openSheet(`<h3>ملاحظة طبية</h3><div class="field"><textarea id="n_txt" rows="4" placeholder="الخطة، الملاحظات، التوصيات…"></textarea></div>
+    <button class="btn" onclick="saveNote('${pid}')">حفظ</button>`);
+}
+function saveNote(pid){const t=$("#n_txt").value.trim();if(!t)return;getPatient(pid).notes.push({date:todayISO(),text:t});saveDB();closeSheet();renderPatient();}
+
+/* ---------- أوراق إدخال القياسات (مشتركة) ---------- */
+let LOG_GTYPE="fasting";
+function logSheet(pid,kind){
+  const today=todayISO();
+  let body="";
+  if(kind==="glucose"){
+    LOG_GTYPE="fasting";
+    body=`<h3>تسجيل السكر</h3>
+      <div class="seg"><button class="active" id="gt_f" onclick="LOG_GTYPE='fasting';this.classList.add('active');$('#gt_p').classList.remove('active')">صائم</button>
+        <button id="gt_p" onclick="LOG_GTYPE='post';this.classList.add('active');$('#gt_f').classList.remove('active')">بعد الأكل</button></div>
+      <div class="field"><label>القراءة (mg/dL)</label><input id="lv" type="number" inputmode="decimal" autofocus></div>
+      <div class="field"><label>التاريخ</label><input id="ld" type="date" value="${today}"></div>`;
+  }else if(kind==="bp"){
+    body=`<h3>تسجيل الضغط</h3>
+      <div class="row"><div class="field"><label>الانقباضي</label><input id="lv1" type="number" inputmode="numeric"></div>
+        <div class="field"><label>الانبساطي</label><input id="lv2" type="number" inputmode="numeric"></div>
+        <div class="field"><label>النبض</label><input id="lv3" type="number" inputmode="numeric"></div></div>
+      <div class="field"><label>التاريخ</label><input id="ld" type="date" value="${today}"></div>`;
+  }else if(kind==="weight"){
+    body=`<h3>تسجيل الوزن</h3>
+      <div class="row"><div class="field"><label>الوزن (كجم)</label><input id="lv1" type="number" inputmode="decimal" step="0.1"></div>
+        <div class="field"><label>محيط الخصر (سم)</label><input id="lv2" type="number" inputmode="numeric"></div></div>
+      <div class="field"><label>التاريخ</label><input id="ld" type="date" value="${today}"></div>`;
+  }else if(kind==="labs"){
+    body=`<h3>تحليل مخبري</h3>
+      <div class="row"><div class="field"><label>HbA1c %</label><input id="lv1" type="number" step="0.1"></div>
+        <div class="field"><label>LDL</label><input id="lv2" type="number"></div></div>
+      <div class="row"><div class="field"><label>HDL</label><input id="lv3" type="number"></div>
+        <div class="field"><label>دهون ثلاثية</label><input id="lv4" type="number"></div>
+        <div class="field"><label>كلي</label><input id="lv5" type="number"></div></div>
+      <div class="field"><label>فيتامين د (ng/mL)</label><input id="lv7" type="number" step="0.1" placeholder="مثال: 18"></div>
+      <div class="row"><div class="field"><label>TSH</label><input id="lv8" type="number" step="0.01" placeholder="mIU/L"></div>
+        <div class="field"><label>T3</label><input id="lv9" type="number" step="0.01"></div>
+        <div class="field"><label>T4</label><input id="lv10" type="number" step="0.01"></div></div>
+      <div class="field"><label>التاريخ</label><input id="ld" type="date" value="${today}"></div>`;
+  }else if(kind==="lifestyle"){
+    body=`<h3>نمط اليوم</h3>
+      <div class="row"><div class="field"><label>الخطوات</label><input id="lv1" type="number"></div>
+        <div class="field"><label>نشاط (دقيقة)</label><input id="lv2" type="number"></div></div>
+      <div class="row"><div class="field"><label>النوم (ساعة)</label><input id="lv3" type="number" step="0.5"></div>
+        <div class="field"><label>نبضات القلب (استراحة)</label><input id="lv4" type="number" placeholder="مثال: 72"></div></div>
+      <div class="field"><label>السعرات المحروقة (نشاط)</label><input id="lv6" type="number" placeholder="مثال: 420"></div>
+      <div class="field"><label>ملاحظة عن الأكل</label><input id="lv5" placeholder="مثال: التزمت بالحمية"></div>
+      <div class="field"><label>التاريخ</label><input id="ld" type="date" value="${today}"></div>`;
+  }else if(kind==="wellbeing"){
+    body=`<h3>إحساسك اليوم</h3>
+      <div class="field"><label>مستوى الطاقة (1 منخفض – 5 ممتاز)</label>
+        <div class="seg" id="seg_e">${[1,2,3,4,5].map(n=>`<button onclick="pickSeg('seg_e',${n})" data-v="${n}">${["😣","😕","😐","🙂","😄"][n-1]}</button>`).join("")}</div></div>
+      <div class="field"><label>مستوى التعب/الإجهاد (1 لا يوجد – 5 شديد)</label>
+        <div class="seg" id="seg_f">${[1,2,3,4,5].map(n=>`<button onclick="pickSeg('seg_f',${n})" data-v="${n}">${n}</button>`).join("")}</div></div>
+      <div class="field"><label>ملاحظة (اختياري)</label><input id="lv5" placeholder="كيف كان يومك؟"></div>
+      <div class="field"><label>التاريخ</label><input id="ld" type="date" value="${today}"></div>`;
+  }else if(kind==="cardio"){
+    body=`<h3>تسجيل كارديو</h3>
+      <div class="field"><label>النوع</label><select id="lv1"><option>مشي</option><option>إليبتيكال</option><option>جري</option><option>دراجة</option><option>سباحة</option><option>أخرى</option></select></div>
+      <div class="row"><div class="field"><label>المدة (دقيقة)</label><input id="lv2" type="number"></div>
+        <div class="field"><label>السعرات المحروقة</label><input id="lv3" type="number"></div></div>
+      <div class="field"><label>التاريخ</label><input id="ld" type="date" value="${today}"></div>`;
+  }else if(kind==="nutrition"){
+    body=`<h3>تسجيل التغذية اليومية</h3>
+      <div class="field"><label>السعرات الكلية</label><input id="lv1" type="number"></div>
+      <div class="row"><div class="field"><label>كاربوهيدرات (g)</label><input id="lv2" type="number"></div>
+        <div class="field"><label>بروتين (g)</label><input id="lv3" type="number"></div>
+        <div class="field"><label>دهون (g)</label><input id="lv4" type="number"></div></div>
+      <div class="field"><label>التاريخ</label><input id="ld" type="date" value="${today}"></div>`;
+  }
+  openSheet(body+`<button class="btn" onclick="saveLog('${pid}','${kind}')">حفظ</button>`);
+}
+let SEGVAL={};
+function pickSeg(id,v){SEGVAL[id]=v;document.querySelectorAll('#'+id+' button').forEach(b=>b.classList.toggle('active',+b.dataset.v===v));}
+function saveLog(pid,kind){
+  const p=getPatient(pid); const date=$("#ld").value||todayISO(); let rec;
+  if(kind==="glucose"){const v=+$("#lv").value;if(!v){alert("أدخل القراءة");return;}rec={date,value:v,type:LOG_GTYPE==='fasting'?'fasting':'post'};p.logs.glucose.push(rec);}
+  else if(kind==="bp"){const s=+$("#lv1").value,d=+$("#lv2").value;if(!s||!d){alert("أدخل القراءة");return;}p.logs.bp.push({date,sys:s,dia:d,pulse:+$("#lv3").value||null});}
+  else if(kind==="weight"){const v=+$("#lv1").value;if(!v){alert("أدخل الوزن");return;}p.logs.weight.push({date,value:v,waist:+$("#lv2").value||null});}
+  else if(kind==="labs"){p.logs.labs.push({date,hba1c:+$("#lv1").value||null,ldl:+$("#lv2").value||null,hdl:+$("#lv3").value||null,tg:+$("#lv4").value||null,tc:+$("#lv5").value||null,vitaminD:+$("#lv7").value||null,tsh:+$("#lv8").value||null,t3:+$("#lv9").value||null,t4:+$("#lv10").value||null});}
+  else if(kind==="lifestyle"){p.logs.lifestyle.push({date,steps:+$("#lv1").value||0,activityMin:+$("#lv2").value||0,sleepHrs:+$("#lv3").value||0,heartRate:+$("#lv4").value||null,calBurned:+$("#lv6").value||null,mealNote:$("#lv5").value.trim(),source:"manual"});}
+  else if(kind==="wellbeing"){p.logs.wellbeing.push({date,energy:SEGVAL.seg_e||3,fatigue:SEGVAL.seg_f||3,mood:"",note:$("#lv5").value.trim()});SEGVAL={};}
+  else if(kind==="cardio"){p.logs.cardio.push({date,type:$("#lv1").value,duration:+$("#lv2").value||0,calories:+$("#lv3").value||0});}
+  else if(kind==="nutrition"){p.logs.nutrition.push({date,calories:+$("#lv1").value||0,carbs:+$("#lv2").value||0,protein:+$("#lv3").value||0,fat:+$("#lv4").value||0});}
+  saveDB();closeSheet();
+  if(SESSION.role==="doctor")renderPatient(); else renderClient();
+}
+
+/* ============================================================
+   واجهة العميل
+   ============================================================ */
+function homeScreenHint(){
+  try{
+    var isStandalone = window.navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    if(isStandalone) return "";
+    if(localStorage.getItem('medfit_hide_a2hs')) return "";
+  }catch(e){ return ""; }
+  return `<div class="banner note" id="a2hsHint" style="align-items:flex-start">
+    <span style="font-size:18px;line-height:1">📲</span>
+    <div><b>نصيحة:</b> أضف Med Fit لشاشتك الرئيسية عشان تفتحه بسرعة كتطبيق — اضغط زر المشاركة ⬆️ بالأسفل، ثم "Add to Home Screen".
+    <button type="button" onclick="dismissA2HS()" style="display:block;margin-top:7px;font-size:12.5px;color:var(--primary);font-weight:700">فهمت، لا تظهر مرة ثانية</button></div></div>`;
+}
+function dismissA2HS(){
+  try{ localStorage.setItem('medfit_hide_a2hs','1'); }catch(e){}
+  const el=document.getElementById('a2hsHint'); if(el) el.remove();
+}
+function renderClient(){
+  FREEZE_SYNC=false;
+  CURRENT_RENDER=renderClient;
+  const p=getPatient(SESSION.pid); if(!p){renderLogin();return;}
+  let body="";
+  if(SESSION.view==="today") body=clToday(p);
+  else if(SESSION.view==="progress") body=clProgress(p);
+  else if(SESSION.view==="workouts") body=clWorkouts(p);
+  else if(SESSION.view==="plan") body=clPlan(p);
+  app().innerHTML=header("مرحبًا "+p.name.split(" ")[0],"رحلتك نحو نمط أصحّ")
+    +`<div class="wrap">${homeScreenHint()}${body}</div>`
+    +bnav([
+      {v:"today",icon:I.plus,label:"اليوم",fn:"SESSION.view='today';renderClient()"},
+      {v:"progress",icon:I.chart,label:"تقدّمي",fn:"SESSION.view='progress';renderClient()"},
+      {v:"workouts",icon:I.dumbbell,label:"تماريني",fn:"SESSION.view='workouts';renderClient()"},
+      {v:"plan",icon:I.pill,label:"خطتي",fn:"SESSION.view='plan';renderClient()"}
+    ]);
+}
+function clToday(p){
+  const fl=patientFlags(p);
+  const streak=computeStreak(p);
+  let banner="";
+  if(fl.length) banner=`<div class="banner alert">${I.warn}<div><b>انتبه:</b> آخر قراءة (${fl.join(" / ")}) خارج النطاق الآمن. تواصل مع طبيبك، وإن وُجدت أعراض شديدة فاطلب الطوارئ.</div></div>`;
+  const items=[
+    ["glucose",I.drop,"السكر","سجّل قراءتك","#13564b","#e4efeb"],
+    ["bp",I.heart,"الضغط","انقباضي/انبساطي","#c0442d","#f8e4de"],
+    ["weight",I.scale,"الوزن","الوزن والخصر","#1d7163","#e2f1ec"],
+    ["lifestyle",I.spark,"النمط","خطوات/نوم/نبض","#d98e48","#f7ecdd"],
+    ["wellbeing",I.battery,"إحساسي","طاقتك وتعبك","#bf8420","#f7eed8"],
+  ];
+  return banner+`<div class="card flat" style="background:var(--primary);color:#fff;border:none">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:13px;opacity:.85">اليوم · ${fmtDFull(todayISO())}</div>
+        <div style="font-size:16px;font-weight:600;margin-top:4px">سجّل قياساتك باستمرار — كل قراءة تقرّبك من هدفك 🌿</div></div>
+        ${streak>0?`<div style="text-align:center;background:rgba(255,255,255,.15);border-radius:14px;padding:8px 12px;flex:none">
+          <div style="color:#ffb648">${I.flame}</div><div style="font-weight:700;font-size:15px">${streak}</div><div style="font-size:9.5px;opacity:.8">يوم متتالي</div></div>`:''}
+      </div>
+    </div>
+    <div class="sec-title">تسجيل سريع</div>
+    <div class="qgrid">${items.map(([k,ic,t,s,c,bg])=>`
+      <button class="qcard" onclick="logSheet('${p.id}','${k}')">
+        <span class="qic" style="background:${bg};color:${c}">${ic}</span>
+        <div><div class="qt">${t}</div><div class="qs">${s}</div></div>
+      </button>`).join("")}
+      <button class="qcard" onclick="SESSION.view='plan';renderClient()">
+        <span class="qic" style="background:var(--surface-2);color:var(--primary)">${I.pill}</span>
+        <div><div class="qt">أدويتي</div><div class="qs">عرض خطتك</div></div>
+      </button>
+    </div>`;
+}
+function clProgress(p){
+  const g=last(p.logs.glucose),lab=last(p.logs.labs),w=last(p.logs.weight);
+  const gd=deltaCalc(p.logs.glucose,null,false);
+  let msg="استمر — كل خطوة تُحدث فرقًا.";
+  if(gd&&gd.cls==='down') msg=`سكرك الصائم تحسّن بمقدار ${Math.abs(gd.diff)} mg/dL منذ البداية 🎉`;
+  const ml=medLoad(p);
+  return `<div class="card flat" style="background:var(--good-soft);border:none">
+      <div style="font-weight:600;color:var(--good)">${msg}</div>
+      ${ml.reduced+ml.stopped>0?`<div class="hint" style="margin-top:6px;color:#1d6a54">بمساعدة طبيبك، تم تخفيف/إيقاف ${ml.reduced+ml.stopped} من أدويتك.</div>`:''}
+    </div>
+    <div class="card"><div class="sec-title" style="margin-top:0">${I.drop} السكر الصائم</div>
+      ${lineChart({values:sortByDate(p.logs.glucose).filter(x=>x.type==='fasting').map(x=>({x:fmtD(x.date),y:x.value})),bandMin:p.targets.fbgMin,bandMax:p.targets.fbgMax,color:"#13564b"})}
+      <div class="hint">المنطقة المظللة = نطاق هدفك (${p.targets.fbgMin}–${p.targets.fbgMax}).</div></div>
+    <div class="card"><div class="sec-title" style="margin-top:0">${I.heart} الضغط الانقباضي</div>
+      ${lineChart({values:sortByDate(p.logs.bp).map(x=>({x:fmtD(x.date),y:x.sys})),bandMax:p.targets.sbp,bandMin:90,color:"#c0442d"})}</div>
+    <div class="card"><div class="sec-title" style="margin-top:0">${I.scale} الوزن</div>
+      ${lineChart({values:sortByDate(p.logs.weight).map(x=>({x:fmtD(x.date),y:x.value})),bandMax:p.targets.weight||undefined,color:"#1d7163"})}</div>
+    ${lab?`<div class="card"><div class="sec-title" style="margin-top:0">${I.flask} آخر تحاليلك</div>
+      <div class="kvi"><span class="k">التراكمي HbA1c</span><span>${lab.hba1c}%</span></div>
+      <div class="kvi"><span class="k">الكوليسترول الضار</span><span>${lab.ldl}</span></div>
+      ${lab.vitaminD!=null?`<div class="kvi"><span class="k">فيتامين د</span><span>${lab.vitaminD} ng/mL</span></div>`:''}
+      ${lab.tsh!=null?`<div class="kvi"><span class="k">TSH</span><span>${lab.tsh}</span></div>`:''}
+      ${lab.t3!=null?`<div class="kvi"><span class="k">T3</span><span>${lab.t3}</span></div>`:''}
+      ${lab.t4!=null?`<div class="kvi"><span class="k">T4</span><span>${lab.t4}</span></div>`:''}
+      <div class="hint" style="margin-top:6px">${fmtDFull(lab.date)}</div></div>`:''}
+    <div class="card"><div class="sec-title" style="margin-top:0">${I.spark} خطواتك</div>
+      ${lineChart({values:sortByDate(p.logs.lifestyle).map(x=>({x:fmtD(x.date),y:x.steps})),color:"#1d7163"})}</div>
+    <div class="card"><div class="sec-title" style="margin-top:0">${I.flame} سعراتك المحروقة</div>
+      ${lineChart({values:sortByDate(p.logs.lifestyle).filter(x=>x.calBurned).map(x=>({x:fmtD(x.date),y:x.calBurned})),color:"#d98e48"})}</div>
+    <div class="card"><div class="sec-title" style="margin-top:0">${I.heart} نبض الاستراحة</div>
+      ${lineChart({values:sortByDate(p.logs.lifestyle).filter(x=>x.heartRate).map(x=>({x:fmtD(x.date),y:x.heartRate})),color:"#c0442d"})}</div>
+    <div class="card"><div class="sec-title" style="margin-top:0">${I.battery} طاقتك</div>
+      ${lineChart({values:sortByDate(p.logs.wellbeing).map(x=>({x:fmtD(x.date),y:x.energy})),bandMin:1,bandMax:5,color:"#d98e48"})}</div>`;
+}
+function clPlan(p){
+  return `<button class="btn wa" style="margin-bottom:14px" onclick="waDoctor()">${I.wa} تواصل مع طبيبك عبر واتساب</button>
+    <div class="banner note">${I.shield}<div>هذا التطبيق للمتابعة فقط. <b>أي تعديل على دوائك يكون بقرار طبيبك المعالج.</b></div></div>
+    <div class="sec-title" style="margin-top:0">${I.pill} أدويتي الحالية</div>
+    ${ptMeds(p,false)}
+    <div class="sec-title">${I.note} من طبيبك</div>
+    ${p.notes.length?sortByDate(p.notes).reverse().slice(0,3).map(n=>`<div class="card"><div class="hint" style="margin:0 0 5px">${fmtDFull(n.date)}</div>${esc(n.text)}</div>`).join(""):`<div class="card"><div class="hint" style="margin:0 0 5px">رسالة ترحيب</div>أهلًا ${esc(p.name.split(" ")[0])} 👋 وصلتني بياناتك وبإذن الله نبدأ رحلتك معًا. سجّل قياساتك أول بأول وراح أتابعها وأضبط خطتك حسب تقدّمك.</div>`}
+    <div class="sec-title">${I.target} أهدافك</div>
+    <div class="card">
+      <div class="kvi"><span class="k">سكر صائم</span><span>${p.targets.fbgMin}–${p.targets.fbgMax} mg/dL</span></div>
+      <div class="kvi"><span class="k">التراكمي</span><span>≤ ${p.targets.hba1c}%</span></div>
+      <div class="kvi"><span class="k">الضغط</span><span>≤ ${p.targets.sbp}/${p.targets.dbp}</span></div>
+      ${p.targets.weight?`<div class="kvi"><span class="k">الوزن</span><span>${p.targets.weight} كجم</span></div>`:''}
+      ${p.targets.calTarget?`<div class="kvi"><span class="k">السعرات اليومية</span><span>${p.targets.calTarget} Cal</span></div>`:''}
+      ${p.targets.carbsTarget?`<div class="kvi"><span class="k">كاربوهيدرات</span><span>${p.targets.carbsTarget} g</span></div>`:''}
+      ${p.targets.proteinTarget?`<div class="kvi"><span class="k">بروتين</span><span>${p.targets.proteinTarget} g</span></div>`:''}
+      ${p.targets.fatTarget?`<div class="kvi"><span class="k">دهون</span><span>${p.targets.fatTarget} g</span></div>`:''}
+    </div>`;
+}
+
+/* ---------- Sheet helpers ---------- */
+function openSheet(html){
+  const s=document.createElement("div");s.className="scrim";s.id="scrim";
+  s.onclick=e=>{if(e.target===s)closeSheet();};
+  s.innerHTML=`<div class="sheet"><div class="grip"></div>${html}</div>`;
+  document.body.appendChild(s);
+}
+function closeSheet(){const s=$("#scrim");if(s)s.remove();}
+
+/* fix: تنظيف خطأ نصي بسيط في statusbar (placeholder) */
+init();
+</script>
+</body>
+</html>
